@@ -1,0 +1,3 @@
+CREATE DATABASE inventorydb;
+CREATE DATABASE paymentsdb;
+CREATE DATABASE authdb;

@@ -1,0 +1,40 @@
+image:
+  repository: myregistry/authcenter
+  tag: "latest"
+service:
+  port: 80
+connectionString: "Host=postgres;Port=5432;Database=authdb;Username=postgres;Password=postgres"
+authentication:
+  issuer: "http://authcenter/"
+  authority: "http://authcenter/"
+  audience: "eztrade-platform"
+elasticLogging:
+  enabled: true
+  enableConsoleSink: true
+  logDirectory: "/app/logs"
+  minimumLevel: "Information"
+  retainedFileCountLimit: 14
+nacos:
+  enabled: true
+  loadConfiguration: false
+  registerService: true
+  serverAddress: "http://nacos:8848"
+  namespaceId: "public"
+  group: "EZTRADE_PLATFORM"
+  clusterName: "DEFAULT"
+  serviceName: "auth-center"
+  configDataId: "auth-center.json"
+  instancePort: 80
+seedAdmin:
+  userName: "admin"
+  email: "admin@eztrade.local"
+  password: "Admin123!"
+seedClients:
+  serviceClientSecret: "EzTrade.Service.Secret!ChangeMe"
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi

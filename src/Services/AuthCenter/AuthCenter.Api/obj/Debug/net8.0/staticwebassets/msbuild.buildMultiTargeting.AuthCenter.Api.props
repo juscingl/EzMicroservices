@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\AuthCenter.Api.props" />
+</Project>

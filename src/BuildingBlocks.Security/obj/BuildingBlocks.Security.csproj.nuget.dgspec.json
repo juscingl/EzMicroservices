@@ -1,0 +1,149 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\eztrade\\Work\\src\\BuildingBlocks.Security\\BuildingBlocks.Security.csproj": {}
+  },
+  "projects": {
+    "D:\\eztrade\\Work\\src\\BuildingBlocks.Security\\BuildingBlocks.Security.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\eztrade\\Work\\src\\BuildingBlocks.Security\\BuildingBlocks.Security.csproj",
+        "projectName": "BuildingBlocks.Security",
+        "projectPath": "D:\\eztrade\\Work\\src\\BuildingBlocks.Security\\BuildingBlocks.Security.csproj",
+        "packagesPath": "C:\\Users\\JuscingLi\\.nuget\\packages\\",
+        "outputPath": "D:\\eztrade\\Work\\src\\BuildingBlocks.Security\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "D:\\eztrade\\Work\\NuGet.Config",
+          "C:\\Users\\JuscingLi\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "D:\\eztrade\\Work\\src\\BuildingBlocks\\BuildingBlocks.csproj": {
+                "projectPath": "D:\\eztrade\\Work\\src\\BuildingBlocks\\BuildingBlocks.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "allWarningsAsErrors": true,
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.Extensions.Options.ConfigurationExtensions": {
+              "target": "Package",
+              "version": "[10.0.5, )"
+            },
+            "OpenIddict.Validation.AspNetCore": {
+              "target": "Package",
+              "version": "[7.3.0, )"
+            },
+            "OpenIddict.Validation.SystemNetHttp": {
+              "target": "Package",
+              "version": "[7.3.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.413/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\eztrade\\Work\\src\\BuildingBlocks\\BuildingBlocks.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\eztrade\\Work\\src\\BuildingBlocks\\BuildingBlocks.csproj",
+        "projectName": "BuildingBlocks",
+        "projectPath": "D:\\eztrade\\Work\\src\\BuildingBlocks\\BuildingBlocks.csproj",
+        "packagesPath": "C:\\Users\\JuscingLi\\.nuget\\packages\\",
+        "outputPath": "D:\\eztrade\\Work\\src\\BuildingBlocks\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "D:\\eztrade\\Work\\NuGet.Config",
+          "C:\\Users\\JuscingLi\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "allWarningsAsErrors": true,
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.413/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

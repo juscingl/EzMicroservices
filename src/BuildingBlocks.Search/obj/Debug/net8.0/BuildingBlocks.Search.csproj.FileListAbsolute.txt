@@ -1,0 +1,12 @@
+D:\eztrade\Work\src\BuildingBlocks.Search\obj\Debug\net8.0\BuildingBlocks.Search.csproj.AssemblyReference.cache
+D:\eztrade\Work\src\BuildingBlocks.Search\obj\Debug\net8.0\BuildingBlocks.Search.GeneratedMSBuildEditorConfig.editorconfig
+D:\eztrade\Work\src\BuildingBlocks.Search\obj\Debug\net8.0\BuildingBlocks.Search.AssemblyInfoInputs.cache
+D:\eztrade\Work\src\BuildingBlocks.Search\obj\Debug\net8.0\BuildingBlocks.Search.AssemblyInfo.cs
+D:\eztrade\Work\src\BuildingBlocks.Search\obj\Debug\net8.0\BuildingBlocks.Search.csproj.CoreCompileInputs.cache
+D:\eztrade\Work\src\BuildingBlocks.Search\bin\Debug\net8.0\BuildingBlocks.Search.deps.json
+D:\eztrade\Work\src\BuildingBlocks.Search\bin\Debug\net8.0\BuildingBlocks.Search.dll
+D:\eztrade\Work\src\BuildingBlocks.Search\bin\Debug\net8.0\BuildingBlocks.Search.pdb
+D:\eztrade\Work\src\BuildingBlocks.Search\obj\Debug\net8.0\BuildingBlocks.Search.dll
+D:\eztrade\Work\src\BuildingBlocks.Search\obj\Debug\net8.0\refint\BuildingBlocks.Search.dll
+D:\eztrade\Work\src\BuildingBlocks.Search\obj\Debug\net8.0\BuildingBlocks.Search.pdb
+D:\eztrade\Work\src\BuildingBlocks.Search\obj\Debug\net8.0\ref\BuildingBlocks.Search.dll

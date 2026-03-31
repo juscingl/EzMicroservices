@@ -1,0 +1,36 @@
+name: ci
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build-test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --no-restore
+      - name: Test
+        run: dotnet test --no-build --collect:"XPlat Code Coverage"
+      - name: Publish Orders Api
+        run: dotnet publish src/Services/Orders/Orders.Api/Orders.Api.csproj -c Release -o out/orders
+      - name: Docker build & push (sample)
+        env:
+          REGISTRY: ${{ secrets.REGISTRY }}
+          TAG: ${{ github.sha }}
+        run: |
+          docker build -t $REGISTRY/orders:$TAG -f src/Services/Orders/Orders.Api/Dockerfile .
+          docker push $REGISTRY/orders:$TAG
+  lint-helm:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-helm@v4
+      - run: helm lint deploy/helm/orders

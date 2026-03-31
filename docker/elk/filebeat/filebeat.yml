@@ -1,0 +1,22 @@
+filebeat.inputs:
+  - type: filestream
+    id: eztrade-service-logs
+    enabled: true
+    parsers:
+      - ndjson:
+          overwrite_keys: true
+          add_error_key: true
+    paths:
+      - /workspace/src/**/logs/*.json
+
+processors:
+  - add_tags:
+      tags: ["eztrade", "dotnet", "ecs"]
+
+setup.template.enabled: false
+
+output.logstash:
+  hosts: ["logstash:5044"]
+
+logging.level: info
+logging.to_files: false

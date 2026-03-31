@@ -1,0 +1,53 @@
+image:
+  repository: myregistry/orders
+  tag: "latest"
+service:
+  port: 80
+connectionString: "Host=postgres;Port=5432;Database=ordersdb;Username=postgres;Password=postgres"
+authentication:
+  issuer: "http://authcenter/"
+  authority: "http://authcenter/"
+  audience: "eztrade-platform"
+elasticLogging:
+  enabled: true
+  enableConsoleSink: true
+  logDirectory: "/app/logs"
+  minimumLevel: "Information"
+  retainedFileCountLimit: 14
+nacos:
+  enabled: true
+  loadConfiguration: false
+  registerService: true
+  serverAddress: "http://nacos:8848"
+  namespaceId: "public"
+  group: "EZTRADE_PLATFORM"
+  clusterName: "DEFAULT"
+  serviceName: "orders-api"
+  configDataId: "orders-api.json"
+  instancePort: 80
+rabbitMq:
+  enabled: true
+  hostName: "rabbitmq"
+  port: 5672
+  userName: "guest"
+  password: "guest"
+  virtualHost: "/"
+  exchangeName: "eztrade.platform"
+  prefetchCount: 16
+  clientProvidedName: "orders-api"
+elasticsearch:
+  enabled: true
+  uri: "http://elasticsearch:9200"
+  defaultIndexPrefix: "eztrade"
+dapr:
+  enabled: true
+  appId: orders-api
+  appPort: 80
+  config: default
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi

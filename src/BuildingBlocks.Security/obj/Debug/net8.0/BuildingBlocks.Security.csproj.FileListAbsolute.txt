@@ -1,0 +1,15 @@
+D:\eztrade\Work\src\BuildingBlocks.Security\obj\Debug\net8.0\BuildingBlocks.Security.csproj.AssemblyReference.cache
+D:\eztrade\Work\src\BuildingBlocks.Security\obj\Debug\net8.0\BuildingBlocks.Security.GeneratedMSBuildEditorConfig.editorconfig
+D:\eztrade\Work\src\BuildingBlocks.Security\obj\Debug\net8.0\BuildingBlocks.Security.AssemblyInfoInputs.cache
+D:\eztrade\Work\src\BuildingBlocks.Security\obj\Debug\net8.0\BuildingBlocks.Security.AssemblyInfo.cs
+D:\eztrade\Work\src\BuildingBlocks.Security\obj\Debug\net8.0\BuildingBlocks.Security.csproj.CoreCompileInputs.cache
+D:\eztrade\Work\src\BuildingBlocks.Security\bin\Debug\net8.0\BuildingBlocks.Security.deps.json
+D:\eztrade\Work\src\BuildingBlocks.Security\bin\Debug\net8.0\BuildingBlocks.Security.dll
+D:\eztrade\Work\src\BuildingBlocks.Security\bin\Debug\net8.0\BuildingBlocks.Security.pdb
+D:\eztrade\Work\src\BuildingBlocks.Security\obj\Debug\net8.0\BuildingBlocks.Security.dll
+D:\eztrade\Work\src\BuildingBlocks.Security\obj\Debug\net8.0\refint\BuildingBlocks.Security.dll
+D:\eztrade\Work\src\BuildingBlocks.Security\obj\Debug\net8.0\BuildingBlocks.Security.pdb
+D:\eztrade\Work\src\BuildingBlocks.Security\obj\Debug\net8.0\ref\BuildingBlocks.Security.dll
+D:\eztrade\Work\src\BuildingBlocks.Security\bin\Debug\net8.0\BuildingBlocks.dll
+D:\eztrade\Work\src\BuildingBlocks.Security\bin\Debug\net8.0\BuildingBlocks.pdb
+D:\eztrade\Work\src\BuildingBlocks.Security\obj\Debug\net8.0\Building.D8C7676A.Up2Date

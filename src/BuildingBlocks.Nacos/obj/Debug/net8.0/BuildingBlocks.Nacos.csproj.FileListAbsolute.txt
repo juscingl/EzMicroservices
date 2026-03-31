@@ -1,0 +1,12 @@
+D:\eztrade\Work\src\BuildingBlocks.Nacos\bin\Debug\net8.0\BuildingBlocks.Nacos.deps.json
+D:\eztrade\Work\src\BuildingBlocks.Nacos\bin\Debug\net8.0\BuildingBlocks.Nacos.dll
+D:\eztrade\Work\src\BuildingBlocks.Nacos\bin\Debug\net8.0\BuildingBlocks.Nacos.pdb
+D:\eztrade\Work\src\BuildingBlocks.Nacos\obj\Debug\net8.0\BuildingBlocks.Nacos.csproj.AssemblyReference.cache
+D:\eztrade\Work\src\BuildingBlocks.Nacos\obj\Debug\net8.0\BuildingBlocks.Nacos.GeneratedMSBuildEditorConfig.editorconfig
+D:\eztrade\Work\src\BuildingBlocks.Nacos\obj\Debug\net8.0\BuildingBlocks.Nacos.AssemblyInfoInputs.cache
+D:\eztrade\Work\src\BuildingBlocks.Nacos\obj\Debug\net8.0\BuildingBlocks.Nacos.AssemblyInfo.cs
+D:\eztrade\Work\src\BuildingBlocks.Nacos\obj\Debug\net8.0\BuildingBlocks.Nacos.csproj.CoreCompileInputs.cache
+D:\eztrade\Work\src\BuildingBlocks.Nacos\obj\Debug\net8.0\BuildingBlocks.Nacos.dll
+D:\eztrade\Work\src\BuildingBlocks.Nacos\obj\Debug\net8.0\refint\BuildingBlocks.Nacos.dll
+D:\eztrade\Work\src\BuildingBlocks.Nacos\obj\Debug\net8.0\BuildingBlocks.Nacos.pdb
+D:\eztrade\Work\src\BuildingBlocks.Nacos\obj\Debug\net8.0\ref\BuildingBlocks.Nacos.dll

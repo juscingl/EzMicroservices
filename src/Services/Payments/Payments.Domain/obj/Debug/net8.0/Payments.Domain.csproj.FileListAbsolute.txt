@@ -1,0 +1,15 @@
+D:\eztrade\Work\src\Services\Payments\Payments.Domain\bin\Debug\net8.0\Payments.Domain.deps.json
+D:\eztrade\Work\src\Services\Payments\Payments.Domain\bin\Debug\net8.0\Payments.Domain.dll
+D:\eztrade\Work\src\Services\Payments\Payments.Domain\bin\Debug\net8.0\Payments.Domain.pdb
+D:\eztrade\Work\src\Services\Payments\Payments.Domain\bin\Debug\net8.0\BuildingBlocks.dll
+D:\eztrade\Work\src\Services\Payments\Payments.Domain\bin\Debug\net8.0\BuildingBlocks.pdb
+D:\eztrade\Work\src\Services\Payments\Payments.Domain\obj\Debug\net8.0\Payments.Domain.csproj.AssemblyReference.cache
+D:\eztrade\Work\src\Services\Payments\Payments.Domain\obj\Debug\net8.0\Payments.Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\eztrade\Work\src\Services\Payments\Payments.Domain\obj\Debug\net8.0\Payments.Domain.AssemblyInfoInputs.cache
+D:\eztrade\Work\src\Services\Payments\Payments.Domain\obj\Debug\net8.0\Payments.Domain.AssemblyInfo.cs
+D:\eztrade\Work\src\Services\Payments\Payments.Domain\obj\Debug\net8.0\Payments.Domain.csproj.CoreCompileInputs.cache
+D:\eztrade\Work\src\Services\Payments\Payments.Domain\obj\Debug\net8.0\Payments.DFA75684.Up2Date
+D:\eztrade\Work\src\Services\Payments\Payments.Domain\obj\Debug\net8.0\Payments.Domain.dll
+D:\eztrade\Work\src\Services\Payments\Payments.Domain\obj\Debug\net8.0\refint\Payments.Domain.dll
+D:\eztrade\Work\src\Services\Payments\Payments.Domain\obj\Debug\net8.0\Payments.Domain.pdb
+D:\eztrade\Work\src\Services\Payments\Payments.Domain\obj\Debug\net8.0\ref\Payments.Domain.dll

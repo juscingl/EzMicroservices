@@ -1,0 +1,15 @@
+D:\eztrade\Work\src\BuildingBlocks.EntityFrameworkCore\bin\Debug\net8.0\BuildingBlocks.EntityFrameworkCore.deps.json
+D:\eztrade\Work\src\BuildingBlocks.EntityFrameworkCore\bin\Debug\net8.0\BuildingBlocks.EntityFrameworkCore.dll
+D:\eztrade\Work\src\BuildingBlocks.EntityFrameworkCore\bin\Debug\net8.0\BuildingBlocks.EntityFrameworkCore.pdb
+D:\eztrade\Work\src\BuildingBlocks.EntityFrameworkCore\bin\Debug\net8.0\BuildingBlocks.dll
+D:\eztrade\Work\src\BuildingBlocks.EntityFrameworkCore\bin\Debug\net8.0\BuildingBlocks.pdb
+D:\eztrade\Work\src\BuildingBlocks.EntityFrameworkCore\obj\Debug\net8.0\BuildingBlocks.EntityFrameworkCore.csproj.AssemblyReference.cache
+D:\eztrade\Work\src\BuildingBlocks.EntityFrameworkCore\obj\Debug\net8.0\BuildingBlocks.EntityFrameworkCore.GeneratedMSBuildEditorConfig.editorconfig
+D:\eztrade\Work\src\BuildingBlocks.EntityFrameworkCore\obj\Debug\net8.0\BuildingBlocks.EntityFrameworkCore.AssemblyInfoInputs.cache
+D:\eztrade\Work\src\BuildingBlocks.EntityFrameworkCore\obj\Debug\net8.0\BuildingBlocks.EntityFrameworkCore.AssemblyInfo.cs
+D:\eztrade\Work\src\BuildingBlocks.EntityFrameworkCore\obj\Debug\net8.0\BuildingBlocks.EntityFrameworkCore.csproj.CoreCompileInputs.cache
+D:\eztrade\Work\src\BuildingBlocks.EntityFrameworkCore\obj\Debug\net8.0\Building.9DB06CD1.Up2Date
+D:\eztrade\Work\src\BuildingBlocks.EntityFrameworkCore\obj\Debug\net8.0\BuildingBlocks.EntityFrameworkCore.dll
+D:\eztrade\Work\src\BuildingBlocks.EntityFrameworkCore\obj\Debug\net8.0\refint\BuildingBlocks.EntityFrameworkCore.dll
+D:\eztrade\Work\src\BuildingBlocks.EntityFrameworkCore\obj\Debug\net8.0\BuildingBlocks.EntityFrameworkCore.pdb
+D:\eztrade\Work\src\BuildingBlocks.EntityFrameworkCore\obj\Debug\net8.0\ref\BuildingBlocks.EntityFrameworkCore.dll

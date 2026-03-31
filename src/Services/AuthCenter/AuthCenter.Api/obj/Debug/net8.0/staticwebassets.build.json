@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "jlHILwHZYnhYt2mkY6I6rK+VGJ9Hx03iK5a9ibiMRlY=",
+  "Source": "AuthCenter.Api",
+  "BasePath": "_content/AuthCenter.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

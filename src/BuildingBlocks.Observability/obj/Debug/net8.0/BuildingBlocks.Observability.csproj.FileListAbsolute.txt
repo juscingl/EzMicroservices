@@ -1,0 +1,12 @@
+D:\eztrade\Work\src\BuildingBlocks.Observability\bin\Debug\net8.0\BuildingBlocks.Observability.deps.json
+D:\eztrade\Work\src\BuildingBlocks.Observability\bin\Debug\net8.0\BuildingBlocks.Observability.dll
+D:\eztrade\Work\src\BuildingBlocks.Observability\bin\Debug\net8.0\BuildingBlocks.Observability.pdb
+D:\eztrade\Work\src\BuildingBlocks.Observability\obj\Debug\net8.0\BuildingBlocks.Observability.csproj.AssemblyReference.cache
+D:\eztrade\Work\src\BuildingBlocks.Observability\obj\Debug\net8.0\BuildingBlocks.Observability.GeneratedMSBuildEditorConfig.editorconfig
+D:\eztrade\Work\src\BuildingBlocks.Observability\obj\Debug\net8.0\BuildingBlocks.Observability.AssemblyInfoInputs.cache
+D:\eztrade\Work\src\BuildingBlocks.Observability\obj\Debug\net8.0\BuildingBlocks.Observability.AssemblyInfo.cs
+D:\eztrade\Work\src\BuildingBlocks.Observability\obj\Debug\net8.0\BuildingBlocks.Observability.csproj.CoreCompileInputs.cache
+D:\eztrade\Work\src\BuildingBlocks.Observability\obj\Debug\net8.0\BuildingBlocks.Observability.dll
+D:\eztrade\Work\src\BuildingBlocks.Observability\obj\Debug\net8.0\refint\BuildingBlocks.Observability.dll
+D:\eztrade\Work\src\BuildingBlocks.Observability\obj\Debug\net8.0\BuildingBlocks.Observability.pdb
+D:\eztrade\Work\src\BuildingBlocks.Observability\obj\Debug\net8.0\ref\BuildingBlocks.Observability.dll

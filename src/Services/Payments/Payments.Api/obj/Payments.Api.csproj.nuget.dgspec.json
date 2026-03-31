@@ -1,0 +1,857 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\eztrade\\Work\\src\\Services\\Payments\\Payments.Api\\Payments.Api.csproj": {}
+  },
+  "projects": {
+    "D:\\eztrade\\Work\\src\\BuildingBlocks.Contracts\\BuildingBlocks.Contracts.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\eztrade\\Work\\src\\BuildingBlocks.Contracts\\BuildingBlocks.Contracts.csproj",
+        "projectName": "BuildingBlocks.Contracts",
+        "projectPath": "D:\\eztrade\\Work\\src\\BuildingBlocks.Contracts\\BuildingBlocks.Contracts.csproj",
+        "packagesPath": "C:\\Users\\JuscingLi\\.nuget\\packages\\",
+        "outputPath": "D:\\eztrade\\Work\\src\\BuildingBlocks.Contracts\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "D:\\eztrade\\Work\\NuGet.Config",
+          "C:\\Users\\JuscingLi\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "allWarningsAsErrors": true,
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.413/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\eztrade\\Work\\src\\BuildingBlocks.EntityFrameworkCore\\BuildingBlocks.EntityFrameworkCore.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\eztrade\\Work\\src\\BuildingBlocks.EntityFrameworkCore\\BuildingBlocks.EntityFrameworkCore.csproj",
+        "projectName": "BuildingBlocks.EntityFrameworkCore",
+        "projectPath": "D:\\eztrade\\Work\\src\\BuildingBlocks.EntityFrameworkCore\\BuildingBlocks.EntityFrameworkCore.csproj",
+        "packagesPath": "C:\\Users\\JuscingLi\\.nuget\\packages\\",
+        "outputPath": "D:\\eztrade\\Work\\src\\BuildingBlocks.EntityFrameworkCore\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "D:\\eztrade\\Work\\NuGet.Config",
+          "C:\\Users\\JuscingLi\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "D:\\eztrade\\Work\\src\\BuildingBlocks\\BuildingBlocks.csproj": {
+                "projectPath": "D:\\eztrade\\Work\\src\\BuildingBlocks\\BuildingBlocks.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "allWarningsAsErrors": true,
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.8, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.413/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\eztrade\\Work\\src\\BuildingBlocks.Messaging\\BuildingBlocks.Messaging.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\eztrade\\Work\\src\\BuildingBlocks.Messaging\\BuildingBlocks.Messaging.csproj",
+        "projectName": "BuildingBlocks.Messaging",
+        "projectPath": "D:\\eztrade\\Work\\src\\BuildingBlocks.Messaging\\BuildingBlocks.Messaging.csproj",
+        "packagesPath": "C:\\Users\\JuscingLi\\.nuget\\packages\\",
+        "outputPath": "D:\\eztrade\\Work\\src\\BuildingBlocks.Messaging\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "D:\\eztrade\\Work\\NuGet.Config",
+          "C:\\Users\\JuscingLi\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "D:\\eztrade\\Work\\src\\BuildingBlocks.Contracts\\BuildingBlocks.Contracts.csproj": {
+                "projectPath": "D:\\eztrade\\Work\\src\\BuildingBlocks.Contracts\\BuildingBlocks.Contracts.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "allWarningsAsErrors": true,
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.Extensions.Hosting.Abstractions": {
+              "target": "Package",
+              "version": "[10.0.5, )"
+            },
+            "Microsoft.Extensions.Options.ConfigurationExtensions": {
+              "target": "Package",
+              "version": "[10.0.5, )"
+            },
+            "RabbitMQ.Client": {
+              "target": "Package",
+              "version": "[7.2.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.413/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\eztrade\\Work\\src\\BuildingBlocks.Nacos\\BuildingBlocks.Nacos.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\eztrade\\Work\\src\\BuildingBlocks.Nacos\\BuildingBlocks.Nacos.csproj",
+        "projectName": "BuildingBlocks.Nacos",
+        "projectPath": "D:\\eztrade\\Work\\src\\BuildingBlocks.Nacos\\BuildingBlocks.Nacos.csproj",
+        "packagesPath": "C:\\Users\\JuscingLi\\.nuget\\packages\\",
+        "outputPath": "D:\\eztrade\\Work\\src\\BuildingBlocks.Nacos\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "D:\\eztrade\\Work\\NuGet.Config",
+          "C:\\Users\\JuscingLi\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "allWarningsAsErrors": true,
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.Extensions.Configuration.Binder": {
+              "target": "Package",
+              "version": "[10.0.5, )"
+            },
+            "Microsoft.Extensions.Configuration.Json": {
+              "target": "Package",
+              "version": "[10.0.5, )"
+            },
+            "Microsoft.Extensions.Hosting.Abstractions": {
+              "target": "Package",
+              "version": "[10.0.5, )"
+            },
+            "Microsoft.Extensions.Http": {
+              "target": "Package",
+              "version": "[10.0.5, )"
+            },
+            "Microsoft.Extensions.Options.ConfigurationExtensions": {
+              "target": "Package",
+              "version": "[10.0.5, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.413/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\eztrade\\Work\\src\\BuildingBlocks.Observability\\BuildingBlocks.Observability.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\eztrade\\Work\\src\\BuildingBlocks.Observability\\BuildingBlocks.Observability.csproj",
+        "projectName": "BuildingBlocks.Observability",
+        "projectPath": "D:\\eztrade\\Work\\src\\BuildingBlocks.Observability\\BuildingBlocks.Observability.csproj",
+        "packagesPath": "C:\\Users\\JuscingLi\\.nuget\\packages\\",
+        "outputPath": "D:\\eztrade\\Work\\src\\BuildingBlocks.Observability\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "D:\\eztrade\\Work\\NuGet.Config",
+          "C:\\Users\\JuscingLi\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "allWarningsAsErrors": true,
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Elastic.CommonSchema.Serilog": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Serilog.AspNetCore": {
+              "target": "Package",
+              "version": "[10.0.0, )"
+            },
+            "Serilog.Enrichers.Environment": {
+              "target": "Package",
+              "version": "[3.0.1, )"
+            },
+            "Serilog.Enrichers.Thread": {
+              "target": "Package",
+              "version": "[4.0.0, )"
+            },
+            "Serilog.Sinks.Console": {
+              "target": "Package",
+              "version": "[6.1.1, )"
+            },
+            "Serilog.Sinks.File": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.413/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\eztrade\\Work\\src\\BuildingBlocks.Security\\BuildingBlocks.Security.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\eztrade\\Work\\src\\BuildingBlocks.Security\\BuildingBlocks.Security.csproj",
+        "projectName": "BuildingBlocks.Security",
+        "projectPath": "D:\\eztrade\\Work\\src\\BuildingBlocks.Security\\BuildingBlocks.Security.csproj",
+        "packagesPath": "C:\\Users\\JuscingLi\\.nuget\\packages\\",
+        "outputPath": "D:\\eztrade\\Work\\src\\BuildingBlocks.Security\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "D:\\eztrade\\Work\\NuGet.Config",
+          "C:\\Users\\JuscingLi\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "D:\\eztrade\\Work\\src\\BuildingBlocks\\BuildingBlocks.csproj": {
+                "projectPath": "D:\\eztrade\\Work\\src\\BuildingBlocks\\BuildingBlocks.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "allWarningsAsErrors": true,
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.Extensions.Options.ConfigurationExtensions": {
+              "target": "Package",
+              "version": "[10.0.5, )"
+            },
+            "OpenIddict.Validation.AspNetCore": {
+              "target": "Package",
+              "version": "[7.3.0, )"
+            },
+            "OpenIddict.Validation.SystemNetHttp": {
+              "target": "Package",
+              "version": "[7.3.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.413/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\eztrade\\Work\\src\\BuildingBlocks\\BuildingBlocks.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\eztrade\\Work\\src\\BuildingBlocks\\BuildingBlocks.csproj",
+        "projectName": "BuildingBlocks",
+        "projectPath": "D:\\eztrade\\Work\\src\\BuildingBlocks\\BuildingBlocks.csproj",
+        "packagesPath": "C:\\Users\\JuscingLi\\.nuget\\packages\\",
+        "outputPath": "D:\\eztrade\\Work\\src\\BuildingBlocks\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "D:\\eztrade\\Work\\NuGet.Config",
+          "C:\\Users\\JuscingLi\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "allWarningsAsErrors": true,
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.413/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\eztrade\\Work\\src\\Services\\Payments\\Payments.Api\\Payments.Api.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\eztrade\\Work\\src\\Services\\Payments\\Payments.Api\\Payments.Api.csproj",
+        "projectName": "Payments.Api",
+        "projectPath": "D:\\eztrade\\Work\\src\\Services\\Payments\\Payments.Api\\Payments.Api.csproj",
+        "packagesPath": "C:\\Users\\JuscingLi\\.nuget\\packages\\",
+        "outputPath": "D:\\eztrade\\Work\\src\\Services\\Payments\\Payments.Api\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "D:\\eztrade\\Work\\NuGet.Config",
+          "C:\\Users\\JuscingLi\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "D:\\eztrade\\Work\\src\\BuildingBlocks.Messaging\\BuildingBlocks.Messaging.csproj": {
+                "projectPath": "D:\\eztrade\\Work\\src\\BuildingBlocks.Messaging\\BuildingBlocks.Messaging.csproj"
+              },
+              "D:\\eztrade\\Work\\src\\BuildingBlocks.Nacos\\BuildingBlocks.Nacos.csproj": {
+                "projectPath": "D:\\eztrade\\Work\\src\\BuildingBlocks.Nacos\\BuildingBlocks.Nacos.csproj"
+              },
+              "D:\\eztrade\\Work\\src\\BuildingBlocks.Observability\\BuildingBlocks.Observability.csproj": {
+                "projectPath": "D:\\eztrade\\Work\\src\\BuildingBlocks.Observability\\BuildingBlocks.Observability.csproj"
+              },
+              "D:\\eztrade\\Work\\src\\BuildingBlocks.Security\\BuildingBlocks.Security.csproj": {
+                "projectPath": "D:\\eztrade\\Work\\src\\BuildingBlocks.Security\\BuildingBlocks.Security.csproj"
+              },
+              "D:\\eztrade\\Work\\src\\Services\\Payments\\Payments.Application\\Payments.Application.csproj": {
+                "projectPath": "D:\\eztrade\\Work\\src\\Services\\Payments\\Payments.Application\\Payments.Application.csproj"
+              },
+              "D:\\eztrade\\Work\\src\\Services\\Payments\\Payments.Infrastructure\\Payments.Infrastructure.csproj": {
+                "projectPath": "D:\\eztrade\\Work\\src\\Services\\Payments\\Payments.Infrastructure\\Payments.Infrastructure.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "allWarningsAsErrors": true,
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.8, )"
+            },
+            "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.8, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.6.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.413/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\eztrade\\Work\\src\\Services\\Payments\\Payments.Application\\Payments.Application.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\eztrade\\Work\\src\\Services\\Payments\\Payments.Application\\Payments.Application.csproj",
+        "projectName": "Payments.Application",
+        "projectPath": "D:\\eztrade\\Work\\src\\Services\\Payments\\Payments.Application\\Payments.Application.csproj",
+        "packagesPath": "C:\\Users\\JuscingLi\\.nuget\\packages\\",
+        "outputPath": "D:\\eztrade\\Work\\src\\Services\\Payments\\Payments.Application\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "D:\\eztrade\\Work\\NuGet.Config",
+          "C:\\Users\\JuscingLi\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "D:\\eztrade\\Work\\src\\BuildingBlocks.Contracts\\BuildingBlocks.Contracts.csproj": {
+                "projectPath": "D:\\eztrade\\Work\\src\\BuildingBlocks.Contracts\\BuildingBlocks.Contracts.csproj"
+              },
+              "D:\\eztrade\\Work\\src\\BuildingBlocks.Messaging\\BuildingBlocks.Messaging.csproj": {
+                "projectPath": "D:\\eztrade\\Work\\src\\BuildingBlocks.Messaging\\BuildingBlocks.Messaging.csproj"
+              },
+              "D:\\eztrade\\Work\\src\\BuildingBlocks\\BuildingBlocks.csproj": {
+                "projectPath": "D:\\eztrade\\Work\\src\\BuildingBlocks\\BuildingBlocks.csproj"
+              },
+              "D:\\eztrade\\Work\\src\\Services\\Payments\\Payments.Domain\\Payments.Domain.csproj": {
+                "projectPath": "D:\\eztrade\\Work\\src\\Services\\Payments\\Payments.Domain\\Payments.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "allWarningsAsErrors": true,
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.413/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\eztrade\\Work\\src\\Services\\Payments\\Payments.Domain\\Payments.Domain.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\eztrade\\Work\\src\\Services\\Payments\\Payments.Domain\\Payments.Domain.csproj",
+        "projectName": "Payments.Domain",
+        "projectPath": "D:\\eztrade\\Work\\src\\Services\\Payments\\Payments.Domain\\Payments.Domain.csproj",
+        "packagesPath": "C:\\Users\\JuscingLi\\.nuget\\packages\\",
+        "outputPath": "D:\\eztrade\\Work\\src\\Services\\Payments\\Payments.Domain\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "D:\\eztrade\\Work\\NuGet.Config",
+          "C:\\Users\\JuscingLi\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "D:\\eztrade\\Work\\src\\BuildingBlocks\\BuildingBlocks.csproj": {
+                "projectPath": "D:\\eztrade\\Work\\src\\BuildingBlocks\\BuildingBlocks.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "allWarningsAsErrors": true,
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.413/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\eztrade\\Work\\src\\Services\\Payments\\Payments.Infrastructure\\Payments.Infrastructure.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\eztrade\\Work\\src\\Services\\Payments\\Payments.Infrastructure\\Payments.Infrastructure.csproj",
+        "projectName": "Payments.Infrastructure",
+        "projectPath": "D:\\eztrade\\Work\\src\\Services\\Payments\\Payments.Infrastructure\\Payments.Infrastructure.csproj",
+        "packagesPath": "C:\\Users\\JuscingLi\\.nuget\\packages\\",
+        "outputPath": "D:\\eztrade\\Work\\src\\Services\\Payments\\Payments.Infrastructure\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "D:\\eztrade\\Work\\NuGet.Config",
+          "C:\\Users\\JuscingLi\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "D:\\eztrade\\Work\\src\\BuildingBlocks.EntityFrameworkCore\\BuildingBlocks.EntityFrameworkCore.csproj": {
+                "projectPath": "D:\\eztrade\\Work\\src\\BuildingBlocks.EntityFrameworkCore\\BuildingBlocks.EntityFrameworkCore.csproj"
+              },
+              "D:\\eztrade\\Work\\src\\BuildingBlocks\\BuildingBlocks.csproj": {
+                "projectPath": "D:\\eztrade\\Work\\src\\BuildingBlocks\\BuildingBlocks.csproj"
+              },
+              "D:\\eztrade\\Work\\src\\Services\\Payments\\Payments.Domain\\Payments.Domain.csproj": {
+                "projectPath": "D:\\eztrade\\Work\\src\\Services\\Payments\\Payments.Domain\\Payments.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "allWarningsAsErrors": true,
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.8, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.8, )"
+            },
+            "Microsoft.Extensions.Configuration.Abstractions": {
+              "target": "Package",
+              "version": "[10.0.5, )"
+            },
+            "Microsoft.Extensions.DependencyInjection.Abstractions": {
+              "target": "Package",
+              "version": "[10.0.5, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[8.0.4, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.413/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

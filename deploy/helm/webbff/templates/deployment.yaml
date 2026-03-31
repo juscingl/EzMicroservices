@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "webbff.fullname" . }}
+  labels: {{- include "webbff.labels" . | nindent 4 }}
+spec:
+  replicas: 2
+  selector:
+    matchLabels: {{- include "webbff.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels: {{- include "webbff.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: webbff
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          env:
+            - name: ASPNETCORE_URLS
+              value: "http://+:80"
+            - name: Services__Orders
+              value: "{{ .Values.services.orders }}"
+            - name: Services__Inventory
+              value: "{{ .Values.services.inventory }}"
+            - name: Authentication__Issuer
+              value: "{{ .Values.authentication.issuer }}"
+            - name: Authentication__Authority
+              value: "{{ .Values.authentication.authority }}"
+            - name: Authentication__Audience
+              value: "{{ .Values.authentication.audience }}"
+            - name: ElasticLogging__Enabled
+              value: "{{ .Values.elasticLogging.enabled }}"
+            - name: ElasticLogging__EnableConsoleSink
+              value: "{{ .Values.elasticLogging.enableConsoleSink }}"
+            - name: ElasticLogging__LogDirectory
+              value: "{{ .Values.elasticLogging.logDirectory }}"
+            - name: ElasticLogging__MinimumLevel
+              value: "{{ .Values.elasticLogging.minimumLevel }}"
+            - name: ElasticLogging__RetainedFileCountLimit
+              value: "{{ .Values.elasticLogging.retainedFileCountLimit }}"
+            - name: Nacos__Enabled
+              value: "{{ .Values.nacos.enabled }}"
+            - name: Nacos__LoadConfiguration
+              value: "{{ .Values.nacos.loadConfiguration }}"
+            - name: Nacos__RegisterService
+              value: "{{ .Values.nacos.registerService }}"
+            - name: Nacos__ServerAddress
+              value: "{{ .Values.nacos.serverAddress }}"
+            - name: Nacos__NamespaceId
+              value: "{{ .Values.nacos.namespaceId }}"
+            - name: Nacos__Group
+              value: "{{ .Values.nacos.group }}"
+            - name: Nacos__ClusterName
+              value: "{{ .Values.nacos.clusterName }}"
+            - name: Nacos__ServiceName
+              value: "{{ .Values.nacos.serviceName }}"
+            - name: Nacos__ConfigDataId
+              value: "{{ .Values.nacos.configDataId }}"
+            - name: Nacos__InstancePort
+              value: "{{ .Values.nacos.instancePort }}"
+          resources: {{- toYaml .Values.resources | nindent 12 }}

@@ -1,0 +1,11 @@
+D:\eztrade\Work\src\BuildingBlocks.Contracts\bin\Debug\net8.0\BuildingBlocks.Contracts.deps.json
+D:\eztrade\Work\src\BuildingBlocks.Contracts\bin\Debug\net8.0\BuildingBlocks.Contracts.dll
+D:\eztrade\Work\src\BuildingBlocks.Contracts\bin\Debug\net8.0\BuildingBlocks.Contracts.pdb
+D:\eztrade\Work\src\BuildingBlocks.Contracts\obj\Debug\net8.0\BuildingBlocks.Contracts.GeneratedMSBuildEditorConfig.editorconfig
+D:\eztrade\Work\src\BuildingBlocks.Contracts\obj\Debug\net8.0\BuildingBlocks.Contracts.AssemblyInfoInputs.cache
+D:\eztrade\Work\src\BuildingBlocks.Contracts\obj\Debug\net8.0\BuildingBlocks.Contracts.AssemblyInfo.cs
+D:\eztrade\Work\src\BuildingBlocks.Contracts\obj\Debug\net8.0\BuildingBlocks.Contracts.csproj.CoreCompileInputs.cache
+D:\eztrade\Work\src\BuildingBlocks.Contracts\obj\Debug\net8.0\BuildingBlocks.Contracts.dll
+D:\eztrade\Work\src\BuildingBlocks.Contracts\obj\Debug\net8.0\refint\BuildingBlocks.Contracts.dll
+D:\eztrade\Work\src\BuildingBlocks.Contracts\obj\Debug\net8.0\BuildingBlocks.Contracts.pdb
+D:\eztrade\Work\src\BuildingBlocks.Contracts\obj\Debug\net8.0\ref\BuildingBlocks.Contracts.dll

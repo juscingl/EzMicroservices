@@ -1,0 +1,11 @@
+D:\eztrade\Work\src\BuildingBlocks\bin\Debug\net8.0\BuildingBlocks.deps.json
+D:\eztrade\Work\src\BuildingBlocks\bin\Debug\net8.0\BuildingBlocks.dll
+D:\eztrade\Work\src\BuildingBlocks\bin\Debug\net8.0\BuildingBlocks.pdb
+D:\eztrade\Work\src\BuildingBlocks\obj\Debug\net8.0\BuildingBlocks.GeneratedMSBuildEditorConfig.editorconfig
+D:\eztrade\Work\src\BuildingBlocks\obj\Debug\net8.0\BuildingBlocks.AssemblyInfoInputs.cache
+D:\eztrade\Work\src\BuildingBlocks\obj\Debug\net8.0\BuildingBlocks.AssemblyInfo.cs
+D:\eztrade\Work\src\BuildingBlocks\obj\Debug\net8.0\BuildingBlocks.csproj.CoreCompileInputs.cache
+D:\eztrade\Work\src\BuildingBlocks\obj\Debug\net8.0\BuildingBlocks.dll
+D:\eztrade\Work\src\BuildingBlocks\obj\Debug\net8.0\refint\BuildingBlocks.dll
+D:\eztrade\Work\src\BuildingBlocks\obj\Debug\net8.0\BuildingBlocks.pdb
+D:\eztrade\Work\src\BuildingBlocks\obj\Debug\net8.0\ref\BuildingBlocks.dll
