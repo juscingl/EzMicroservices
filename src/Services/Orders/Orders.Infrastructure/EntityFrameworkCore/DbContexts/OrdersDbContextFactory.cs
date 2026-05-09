@@ -4,8 +4,14 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace Orders.Infrastructure.EntityFrameworkCore.DbContexts;
 
+/// <summary>
+/// 设计时 DbContext 工厂，供 EF Core 迁移命令创建上下文实例。
+/// </summary>
 public sealed class OrdersDbContextFactory : IDesignTimeDbContextFactory<OrdersDbContext>
 {
+    /// <summary>
+    /// 创建设计时 OrdersDbContext。
+    /// </summary>
     public OrdersDbContext CreateDbContext(string[] args)
     {
         var optionsBuilder = new DbContextOptionsBuilder<OrdersDbContext>();
@@ -13,6 +19,9 @@ public sealed class OrdersDbContextFactory : IDesignTimeDbContextFactory<OrdersD
         return new OrdersDbContext(optionsBuilder.Options, NullCurrentUserAccessor.Instance);
     }
 
+    /// <summary>
+    /// 读取连接串：优先环境变量，未配置时回退到本地默认值。
+    /// </summary>
     private static string GetConnectionString(string environmentVariableName, string databaseName)
     {
         return Environment.GetEnvironmentVariable(environmentVariableName)

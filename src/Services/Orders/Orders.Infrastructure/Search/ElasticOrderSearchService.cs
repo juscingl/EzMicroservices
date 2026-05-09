@@ -11,6 +11,9 @@ using Orders.Infrastructure.Search.Documents;
 
 namespace Orders.Infrastructure.Search;
 
+/// <summary>
+/// 订单 Elasticsearch 服务，同时负责索引写入与查询读取。
+/// </summary>
 internal sealed class ElasticOrderSearchService(
     IHttpClientFactory httpClientFactory,
     IIndexNameResolver indexNameResolver,
@@ -26,6 +29,9 @@ internal sealed class ElasticOrderSearchService(
     private readonly SemaphoreSlim _indexInitializationLock = new(1, 1);
     private volatile bool _indexInitialized;
 
+    /// <summary>
+    /// 将订单写入 Elasticsearch 索引。
+    /// </summary>
     public async Task IndexAsync(Order order, CancellationToken cancellationToken = default)
     {
         if (!_options.Enabled)
@@ -47,6 +53,9 @@ internal sealed class ElasticOrderSearchService(
         logger.LogInformation("Indexed order {OrderId} into Elasticsearch index {IndexName}.", order.Id, indexName);
     }
 
+    /// <summary>
+    /// 按关键字与客户条件查询订单索引。
+    /// </summary>
     public async Task<IReadOnlyCollection<OrderSearchResult>> SearchAsync(
         string? keyword,
         Guid? customerId,
@@ -134,6 +143,7 @@ internal sealed class ElasticOrderSearchService(
                 existsResponse.EnsureSuccessStatusCode();
             }
 
+            // 首次初始化索引映射，确保查询字段类型固定。
             var indexDefinition = new
             {
                 mappings = new

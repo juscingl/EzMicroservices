@@ -3,6 +3,9 @@ using Orders.Domain.Entities;
 
 namespace Orders.Infrastructure.Search.Documents;
 
+/// <summary>
+/// 订单搜索文档模型，对应 Elasticsearch 中的订单索引结构。
+/// </summary>
 internal sealed class OrderSearchDocument
 {
     public required string OrderId { get; init; }
@@ -23,6 +26,9 @@ internal sealed class OrderSearchDocument
 
     public required IReadOnlyCollection<OrderSearchLineDocument> Lines { get; init; }
 
+    /// <summary>
+    /// 将订单聚合转换为可写入索引的文档。
+    /// </summary>
     public static OrderSearchDocument FromOrder(Order order)
     {
         var lines = order.Items
@@ -45,6 +51,9 @@ internal sealed class OrderSearchDocument
         };
     }
 
+    /// <summary>
+    /// 将索引文档转换为应用层搜索结果对象。
+    /// </summary>
     public OrderSearchResult ToSearchResult()
     {
         return new OrderSearchResult(
@@ -58,4 +67,7 @@ internal sealed class OrderSearchDocument
     }
 }
 
+/// <summary>
+/// 订单行搜索文档模型。
+/// </summary>
 internal sealed record OrderSearchLineDocument(string ProductId, int Quantity, decimal UnitPrice);

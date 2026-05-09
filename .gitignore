@@ -1,0 +1,12 @@
+
+*.dll
+
+*.pdb
+
+src/Bff/WebBff/obj/Debug/net8.0/
+
+src/Bff/WebBff/bin/Debug/net8.0/
+
+src/Services/Inventory/Inventory.Api/bin/Debug/net8.0/
+
+*.cache
