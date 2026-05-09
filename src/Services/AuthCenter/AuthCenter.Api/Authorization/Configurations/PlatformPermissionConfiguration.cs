@@ -31,6 +31,11 @@ public sealed class PlatformPermissionConfiguration : IEntityTypeConfiguration<P
             .HasMaxLength(64)
             .IsRequired();
 
+        builder.Property(permission => permission.Scope)
+            .HasMaxLength(64)
+            .IsRequired();
+
+        builder.Property(permission => permission.GroupName).HasMaxLength(128);
         builder.Property(permission => permission.Description).HasMaxLength(512);
 
         builder.HasIndex(permission => permission.Code).IsUnique();

@@ -26,6 +26,14 @@ public sealed class PlatformMenu : FullAuditedEntity
 
     public bool IsEnabled { get; set; } = true;
 
+    public bool IsExternal { get; set; }
+
+    public string? LinkUrl { get; set; }
+
+    public bool KeepAlive { get; set; }
+
+    public bool HideInBreadcrumb { get; set; }
+
     public ICollection<PlatformMenu> Children { get; set; } = [];
 
     public ICollection<PlatformPermission> Permissions { get; set; } = [];

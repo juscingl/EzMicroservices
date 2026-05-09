@@ -1,3 +1,4 @@
+using AuthCenter.Api.Authorization;
 using AuthCenter.Api.Authorization.Entities;
 using AuthCenter.Api.EntityFrameworkCore;
 using AuthCenter.Api.Identity;
@@ -8,12 +9,26 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AuthCenter.Api.Services;
 
+/// <summary>
+/// 授权管理服务实现，负责用户、角色、菜单、权限的查询与维护。
+/// </summary>
 public sealed class AuthorizationManagementService(
     AuthCenterDbContext dbContext,
     UserManager<ApplicationUser> userManager,
     RoleManager<ApplicationRole> roleManager,
     IPermissionGrantResolver permissionGrantResolver) : IAuthorizationManagementService
 {
+    private static readonly HashSet<string> AllowedPermissionTypes = new(
+        PlatformPermissionConstants.PermissionTypes,
+        StringComparer.OrdinalIgnoreCase);
+
+    private static readonly HashSet<string> AllowedPermissionScopes = new(
+        PlatformPermissionConstants.Scopes,
+        StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// 获取当前用户完整资料（角色、权限、菜单）。
+    /// </summary>
     public async Task<CurrentUserProfileResponse?> GetCurrentUserAsync(
         Guid userId,
         CancellationToken cancellationToken = default)
@@ -35,13 +50,19 @@ public sealed class AuthorizationManagementService(
         return new CurrentUserProfileResponse(
             user.Id,
             user.UserName ?? string.Empty,
+            user.DisplayName,
             user.Email ?? string.Empty,
+            user.PhoneNumber,
+            user.IsEnabled,
             roles.ToArray(),
             permissions,
             directPermissions,
             menus);
     }
 
+    /// <summary>
+    /// 获取当前用户权限集合。
+    /// </summary>
     public async Task<IReadOnlyCollection<string>> GetCurrentUserPermissionsAsync(
         Guid userId,
         CancellationToken cancellationToken = default)
@@ -59,6 +80,9 @@ public sealed class AuthorizationManagementService(
         return await permissionGrantResolver.GetUserPermissionCodesAsync(user.Id, roles, cancellationToken);
     }
 
+    /// <summary>
+    /// 获取当前用户菜单树。
+    /// </summary>
     public async Task<IReadOnlyCollection<MenuNodeResponse>> GetCurrentUserMenusAsync(
         Guid userId,
         CancellationToken cancellationToken = default)
@@ -96,6 +120,21 @@ public sealed class AuthorizationManagementService(
 
     public async Task<UserResponse> CreateUserAsync(CreateUserRequest request, CancellationToken cancellationToken = default)
     {
+        if (string.IsNullOrWhiteSpace(request.UserName))
+        {
+            throw new InvalidOperationException("UserName is required.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.DisplayName))
+        {
+            throw new InvalidOperationException("DisplayName is required.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.Email))
+        {
+            throw new InvalidOperationException("Email is required.");
+        }
+
         await EnsureRolesExistAsync(request.Roles, cancellationToken);
         var permissions = await ResolvePermissionsByCodesAsync(request.DirectPermissionCodes, cancellationToken);
 
@@ -103,7 +142,10 @@ public sealed class AuthorizationManagementService(
         {
             Id = Guid.NewGuid(),
             UserName = request.UserName,
+            DisplayName = request.DisplayName,
             Email = request.Email,
+            PhoneNumber = request.PhoneNumber,
+            IsEnabled = request.IsEnabled,
             EmailConfirmed = true
         };
 
@@ -176,6 +218,32 @@ public sealed class AuthorizationManagementService(
         return await MapUserResponseAsync(user, includeMenus: true, cancellationToken);
     }
 
+    public async Task<bool> DeleteUserAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        var user = await userManager.FindByIdAsync(userId.ToString());
+        if (user is null)
+        {
+            return false;
+        }
+
+        user.IsDeleted = true;
+        user.DeletionTime = DateTimeOffset.UtcNow;
+        user.DeleterId = userId;
+        await ReplaceUserPermissionGrantsAsync(user.Id, Array.Empty<Guid>(), cancellationToken);
+
+        var existingRoles = await userManager.GetRolesAsync(user);
+        if (existingRoles.Count > 0)
+        {
+            var removeRoleResult = await userManager.RemoveFromRolesAsync(user, existingRoles);
+            EnsureIdentityResult(removeRoleResult, "Failed to remove user roles.");
+        }
+
+        var updateResult = await userManager.UpdateAsync(user);
+        EnsureIdentityResult(updateResult, "Failed to delete user.");
+        await dbContext.SaveChangesAsync(cancellationToken);
+        return true;
+    }
+
     public async Task<IReadOnlyCollection<RoleResponse>> GetRolesAsync(CancellationToken cancellationToken = default)
     {
         var roles = await roleManager.Roles
@@ -194,20 +262,91 @@ public sealed class AuthorizationManagementService(
 
     public async Task<RoleResponse> CreateRoleAsync(CreateRoleRequest request, CancellationToken cancellationToken = default)
     {
+        if (string.IsNullOrWhiteSpace(request.Name))
+        {
+            throw new InvalidOperationException("Role name is required.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.Code))
+        {
+            throw new InvalidOperationException("Role code is required.");
+        }
+
         var existingRole = await roleManager.FindByNameAsync(request.Name);
         if (existingRole is not null)
         {
             throw new InvalidOperationException($"Role '{request.Name}' already exists.");
         }
 
+        var duplicateRoleCode = await roleManager.Roles
+            .AsNoTracking()
+            .AnyAsync(role => role.Code == request.Code, cancellationToken);
+        if (duplicateRoleCode)
+        {
+            throw new InvalidOperationException($"Role code '{request.Code}' already exists.");
+        }
+
         var permissions = await ResolvePermissionsByCodesAsync(request.PermissionCodes, cancellationToken);
 
         var role = new ApplicationRole(request.Name);
+        role.Code = request.Code;
+        role.Description = request.Description;
+        role.Sort = request.Sort;
+        role.IsEnabled = request.IsEnabled;
         var createResult = await roleManager.CreateAsync(role);
         EnsureIdentityResult(createResult, "Failed to create role.");
 
         await ReplaceRolePermissionGrantsAsync(role.Id, permissions.Select(permission => permission.Id).ToArray(), cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);
+
+        return await MapRoleResponseAsync(role, cancellationToken);
+    }
+
+    public async Task<RoleResponse?> UpdateRoleAsync(
+        Guid roleId,
+        UpdateRoleRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(request.Name))
+        {
+            throw new InvalidOperationException("Role name is required.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.Code))
+        {
+            throw new InvalidOperationException("Role code is required.");
+        }
+
+        var role = await roleManager.FindByIdAsync(roleId.ToString());
+        if (role is null)
+        {
+            return null;
+        }
+
+        var duplicateName = await roleManager.Roles
+            .AsNoTracking()
+            .AnyAsync(item => item.Name == request.Name && item.Id != roleId, cancellationToken);
+        if (duplicateName)
+        {
+            throw new InvalidOperationException($"Role '{request.Name}' already exists.");
+        }
+
+        var duplicateCode = await roleManager.Roles
+            .AsNoTracking()
+            .AnyAsync(item => item.Code == request.Code && item.Id != roleId, cancellationToken);
+        if (duplicateCode)
+        {
+            throw new InvalidOperationException($"Role code '{request.Code}' already exists.");
+        }
+
+        role.Name = request.Name;
+        role.NormalizedName = request.Name.ToUpperInvariant();
+        role.Code = request.Code;
+        role.Description = request.Description;
+        role.Sort = request.Sort;
+        role.IsEnabled = request.IsEnabled;
+        var updateResult = await roleManager.UpdateAsync(role);
+        EnsureIdentityResult(updateResult, "Failed to update role.");
 
         return await MapRoleResponseAsync(role, cancellationToken);
     }
@@ -233,6 +372,30 @@ public sealed class AuthorizationManagementService(
         return await MapRoleResponseAsync(role, cancellationToken);
     }
 
+    public async Task<bool> DeleteRoleAsync(Guid roleId, CancellationToken cancellationToken = default)
+    {
+        var role = await roleManager.FindByIdAsync(roleId.ToString());
+        if (role is null)
+        {
+            return false;
+        }
+
+        role.IsDeleted = true;
+        role.DeletionTime = DateTimeOffset.UtcNow;
+        role.DeleterId = roleId;
+        await ReplaceRolePermissionGrantsAsync(roleId, Array.Empty<Guid>(), cancellationToken);
+
+        var userRoleMappings = await dbContext.Set<IdentityUserRole<Guid>>()
+            .Where(mapping => mapping.RoleId == roleId)
+            .ToListAsync(cancellationToken);
+        dbContext.RemoveRange(userRoleMappings);
+
+        var updateResult = await roleManager.UpdateAsync(role);
+        EnsureIdentityResult(updateResult, "Failed to delete role.");
+        await dbContext.SaveChangesAsync(cancellationToken);
+        return true;
+    }
+
     public async Task<IReadOnlyCollection<MenuNodeResponse>> GetMenusAsync(CancellationToken cancellationToken = default)
     {
         var menus = await dbContext.Menus
@@ -249,6 +412,32 @@ public sealed class AuthorizationManagementService(
         SaveMenuRequest request,
         CancellationToken cancellationToken = default)
     {
+        if (string.IsNullOrWhiteSpace(request.Code))
+        {
+            throw new InvalidOperationException("Menu code is required.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.Name))
+        {
+            throw new InvalidOperationException("Menu name is required.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.Route))
+        {
+            throw new InvalidOperationException("Menu route is required.");
+        }
+
+        var trimmedLinkUrl = request.LinkUrl?.Trim();
+        if (request.IsExternal && string.IsNullOrWhiteSpace(trimmedLinkUrl))
+        {
+            throw new InvalidOperationException("External menu must provide linkUrl.");
+        }
+
+        if (!request.IsExternal && !string.IsNullOrWhiteSpace(trimmedLinkUrl))
+        {
+            throw new InvalidOperationException("Internal menu cannot provide linkUrl.");
+        }
+
         if (menuId.HasValue && request.ParentId == menuId)
         {
             throw new InvalidOperationException("A menu cannot reference itself as parent.");
@@ -297,6 +486,10 @@ public sealed class AuthorizationManagementService(
         menu.Sort = request.Sort;
         menu.IsVisible = request.IsVisible;
         menu.IsEnabled = request.IsEnabled;
+        menu.IsExternal = request.IsExternal;
+        menu.LinkUrl = request.IsExternal ? trimmedLinkUrl : null;
+        menu.KeepAlive = request.KeepAlive;
+        menu.HideInBreadcrumb = request.HideInBreadcrumb;
         menu.Description = request.Description;
         menu.IsDeleted = false;
         menu.DeletionTime = null;
@@ -304,6 +497,34 @@ public sealed class AuthorizationManagementService(
 
         await dbContext.SaveChangesAsync(cancellationToken);
         return MapMenu(menu, Array.Empty<MenuNodeResponse>());
+    }
+
+    public async Task<bool> DeleteMenuAsync(Guid menuId, CancellationToken cancellationToken = default)
+    {
+        var menu = await dbContext.Menus.IgnoreQueryFilters()
+            .FirstOrDefaultAsync(item => item.Id == menuId, cancellationToken);
+        if (menu is null)
+        {
+            return false;
+        }
+
+        var hasChildren = await dbContext.Menus.AnyAsync(item => item.ParentId == menuId, cancellationToken);
+        if (hasChildren)
+        {
+            throw new InvalidOperationException("The menu has child nodes and cannot be deleted.");
+        }
+
+        var hasPermissions = await dbContext.Permissions.AnyAsync(item => item.MenuId == menuId, cancellationToken);
+        if (hasPermissions)
+        {
+            throw new InvalidOperationException("The menu contains permissions and cannot be deleted.");
+        }
+
+        menu.IsDeleted = true;
+        menu.DeletionTime = DateTimeOffset.UtcNow;
+        menu.DeleterId = menuId;
+        await dbContext.SaveChangesAsync(cancellationToken);
+        return true;
     }
 
     public async Task<IReadOnlyCollection<PermissionResponse>> GetPermissionsAsync(CancellationToken cancellationToken = default)
@@ -323,6 +544,51 @@ public sealed class AuthorizationManagementService(
         SavePermissionRequest request,
         CancellationToken cancellationToken = default)
     {
+        if (string.IsNullOrWhiteSpace(request.Code))
+        {
+            throw new InvalidOperationException("Permission code is required.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.Name))
+        {
+            throw new InvalidOperationException("Permission name is required.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.Resource))
+        {
+            throw new InvalidOperationException("Permission resource is required.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.Action))
+        {
+            throw new InvalidOperationException("Permission action is required.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.PermissionType))
+        {
+            throw new InvalidOperationException("Permission type is required.");
+        }
+
+        if (!AllowedPermissionTypes.Contains(request.PermissionType))
+        {
+            throw new InvalidOperationException($"Permission type '{request.PermissionType}' is not supported.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.Scope))
+        {
+            throw new InvalidOperationException("Permission scope is required.");
+        }
+
+        if (!AllowedPermissionScopes.Contains(request.Scope))
+        {
+            throw new InvalidOperationException($"Permission scope '{request.Scope}' is not supported.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.GroupName))
+        {
+            throw new InvalidOperationException("Permission groupName is required.");
+        }
+
         if (request.MenuId.HasValue)
         {
             var menuExists = await dbContext.Menus
@@ -363,6 +629,8 @@ public sealed class AuthorizationManagementService(
         permission.Resource = request.Resource;
         permission.Action = request.Action;
         permission.PermissionType = request.PermissionType;
+        permission.Scope = request.Scope;
+        permission.GroupName = request.GroupName.Trim();
         permission.Sort = request.Sort;
         permission.IsSystem = request.IsSystem;
         permission.IsEnabled = request.IsEnabled;
@@ -373,6 +641,38 @@ public sealed class AuthorizationManagementService(
 
         await dbContext.SaveChangesAsync(cancellationToken);
         return MapPermission(permission);
+    }
+
+    public async Task<bool> DeletePermissionAsync(Guid permissionId, CancellationToken cancellationToken = default)
+    {
+        var permission = await dbContext.Permissions.IgnoreQueryFilters()
+            .FirstOrDefaultAsync(item => item.Id == permissionId, cancellationToken);
+        if (permission is null)
+        {
+            return false;
+        }
+
+        var roleGrants = await dbContext.RolePermissionGrants
+            .Where(item => item.PermissionId == permissionId)
+            .ToListAsync(cancellationToken);
+        if (roleGrants.Count > 0)
+        {
+            dbContext.RolePermissionGrants.RemoveRange(roleGrants);
+        }
+
+        var userGrants = await dbContext.UserPermissionGrants
+            .Where(item => item.PermissionId == permissionId)
+            .ToListAsync(cancellationToken);
+        if (userGrants.Count > 0)
+        {
+            dbContext.UserPermissionGrants.RemoveRange(userGrants);
+        }
+
+        permission.IsDeleted = true;
+        permission.DeletionTime = DateTimeOffset.UtcNow;
+        permission.DeleterId = permissionId;
+        await dbContext.SaveChangesAsync(cancellationToken);
+        return true;
     }
 
     private async Task<UserResponse> MapUserResponseAsync(
@@ -390,7 +690,10 @@ public sealed class AuthorizationManagementService(
         return new UserResponse(
             user.Id,
             user.UserName ?? string.Empty,
+            user.DisplayName,
             user.Email ?? string.Empty,
+            user.PhoneNumber,
+            user.IsEnabled,
             roles.ToArray(),
             permissions,
             directPermissions,
@@ -400,7 +703,7 @@ public sealed class AuthorizationManagementService(
     private async Task<RoleResponse> MapRoleResponseAsync(ApplicationRole role, CancellationToken cancellationToken)
     {
         var permissions = await permissionGrantResolver.GetRolePermissionCodesAsync([role.Name ?? string.Empty], cancellationToken);
-        return new RoleResponse(role.Id, role.Name ?? string.Empty, permissions);
+        return new RoleResponse(role.Id, role.Name ?? string.Empty, role.Code, role.Description, role.Sort, role.IsEnabled, permissions);
     }
 
     private async Task EnsureRolesExistAsync(IEnumerable<string> roles, CancellationToken cancellationToken)
@@ -418,13 +721,25 @@ public sealed class AuthorizationManagementService(
         var existingRoles = await roleManager.Roles
             .AsNoTracking()
             .Where(role => role.Name != null && distinctRoles.Contains(role.Name))
-            .Select(role => role.Name!)
+            .Select(role => new { role.Name, role.IsEnabled })
             .ToArrayAsync(cancellationToken);
 
-        var missingRoles = distinctRoles.Except(existingRoles, StringComparer.OrdinalIgnoreCase).ToArray();
+        var existingRoleNames = existingRoles
+            .Select(role => role.Name!)
+            .ToArray();
+        var missingRoles = distinctRoles.Except(existingRoleNames, StringComparer.OrdinalIgnoreCase).ToArray();
         if (missingRoles.Length > 0)
         {
             throw new InvalidOperationException($"The following roles do not exist: {string.Join(", ", missingRoles)}.");
+        }
+
+        var disabledRoles = existingRoles
+            .Where(role => !role.IsEnabled)
+            .Select(role => role.Name!)
+            .ToArray();
+        if (disabledRoles.Length > 0)
+        {
+            throw new InvalidOperationException($"The following roles are disabled: {string.Join(", ", disabledRoles)}.");
         }
     }
 
@@ -561,6 +876,10 @@ public sealed class AuthorizationManagementService(
             menu.Sort,
             menu.IsVisible,
             menu.IsEnabled,
+            menu.IsExternal,
+            menu.LinkUrl,
+            menu.KeepAlive,
+            menu.HideInBreadcrumb,
             children);
     }
 
@@ -574,6 +893,8 @@ public sealed class AuthorizationManagementService(
             permission.Resource,
             permission.Action,
             permission.PermissionType,
+            permission.Scope,
+            permission.GroupName,
             permission.Sort,
             permission.IsSystem,
             permission.IsEnabled);

@@ -18,6 +18,10 @@ public sealed class PlatformPermission : FullAuditedEntity
 
     public string PermissionType { get; set; } = string.Empty;
 
+    public string Scope { get; set; } = string.Empty;
+
+    public string? GroupName { get; set; }
+
     public string? Description { get; set; }
 
     public int Sort { get; set; }

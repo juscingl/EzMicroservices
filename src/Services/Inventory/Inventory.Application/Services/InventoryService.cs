@@ -4,8 +4,14 @@ using Inventory.Domain.Repositories;
 
 namespace Inventory.Application.Services;
 
+/// <summary>
+/// 库存应用服务实现，负责库存调整与查询。
+/// </summary>
 public sealed class InventoryService(IInventoryRepository inventoryRepository, IUnitOfWork unitOfWork) : IInventoryService
 {
+    /// <summary>
+    /// 调整库存：不存在则创建库存项，存在则累加/扣减。
+    /// </summary>
     public async Task<int> AdjustAsync(Guid skuId, int delta, CancellationToken cancellationToken = default)
     {
         var stockItem = await inventoryRepository.FindBySkuIdAsync(skuId, cancellationToken);
@@ -24,6 +30,9 @@ public sealed class InventoryService(IInventoryRepository inventoryRepository, I
         return stockItem.Quantity;
     }
 
+    /// <summary>
+    /// 查询指定 SKU 的库存项。
+    /// </summary>
     public Task<StockItem?> GetBySkuIdAsync(Guid skuId, CancellationToken cancellationToken = default)
     {
         return inventoryRepository.FindBySkuIdAsync(skuId, cancellationToken);

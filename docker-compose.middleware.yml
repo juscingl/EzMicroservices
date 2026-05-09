@@ -1,0 +1,94 @@
+services:
+  rabbitmq:
+    image: rabbitmq:4.1.8-management
+    container_name: eztrade-rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-guest}
+    ports:
+      - "${RABBITMQ_PORT:-5672}:5672"
+      - "${RABBITMQ_MANAGEMENT_PORT:-15672}:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+
+  nacos:
+    image: nacos/nacos-server:v2.5.2
+    container_name: eztrade-nacos
+    restart: unless-stopped
+    environment:
+      MODE: standalone
+    ports:
+      - "${NACOS_HTTP_PORT:-8848}:8848"
+      - "${NACOS_GRPC_PORT_1:-9848}:9848"
+      - "${NACOS_GRPC_PORT_2:-9849}:9849"
+    volumes:
+      - nacosdata:/home/nacos/data
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.3.0
+    container_name: eztrade-elasticsearch
+    restart: unless-stopped
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: "-Xms1g -Xmx1g"
+    ports:
+      - "${ELASTICSEARCH_HTTP_PORT:-9200}:9200"
+      - "${ELASTICSEARCH_TRANSPORT_PORT:-9300}:9300"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:9200 >/dev/null || exit 1"]
+      interval: 20s
+      timeout: 10s
+      retries: 15
+
+  kibana:
+    profiles: ["elk"]
+    image: docker.elastic.co/kibana/kibana:9.3.0
+    container_name: eztrade-kibana
+    restart: unless-stopped
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    ports:
+      - "${KIBANA_PORT:-5601}:5601"
+
+  logstash:
+    profiles: ["elk"]
+    image: docker.elastic.co/logstash/logstash:9.3.0
+    container_name: eztrade-logstash
+    restart: unless-stopped
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    environment:
+      LS_JAVA_OPTS: "-Xms512m -Xmx512m"
+    ports:
+      - "${LOGSTASH_BEATS_PORT:-5044}:5044"
+    volumes:
+      - ./docker/elk/logstash/pipeline:/usr/share/logstash/pipeline:ro
+
+  filebeat:
+    profiles: ["elk"]
+    image: docker.elastic.co/beats/filebeat:9.3.0
+    container_name: eztrade-filebeat
+    restart: unless-stopped
+    user: root
+    command: ["--strict.perms=false"]
+    depends_on:
+      logstash:
+        condition: service_started
+    volumes:
+      - ./docker/elk/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - ./src:/workspace/src:ro
+
+volumes:
+  esdata:
+  nacosdata:

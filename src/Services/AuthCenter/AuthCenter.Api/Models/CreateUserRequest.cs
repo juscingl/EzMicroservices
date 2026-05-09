@@ -5,7 +5,10 @@ namespace AuthCenter.Api.Models;
 /// </summary>
 public sealed record CreateUserRequest(
     string UserName,
+    string DisplayName,
     string Email,
+    string? PhoneNumber,
     string Password,
+    bool IsEnabled,
     IReadOnlyCollection<string> Roles,
     IReadOnlyCollection<string> DirectPermissionCodes);

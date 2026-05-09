@@ -8,10 +8,7 @@ export function usePermission() {
    * @param accesses
    */
   function _somePermissions(accesses: string[]) {
-    return userStore.getPermissions.some((item) => {
-      const { value }: any = item;
-      return accesses.includes(value);
-    });
+    return userStore.getPermissions.some((permissionCode) => accesses.includes(permissionCode));
   }
 
   /**
@@ -30,7 +27,7 @@ export function usePermission() {
   function hasEveryPermission(accesses: string[]): boolean {
     const permissionsList = userStore.getPermissions;
     if (Array.isArray(accesses)) {
-      return permissionsList.every((access: any) => accesses.includes(access.value));
+      return accesses.every((access) => permissionsList.includes(access));
     }
     throw new Error(`[hasEveryPermission]: ${accesses} should be a array !`);
   }
@@ -43,7 +40,7 @@ export function usePermission() {
   function hasSomePermission(accesses: string[]): boolean {
     const permissionsList = userStore.getPermissions;
     if (Array.isArray(accesses)) {
-      return permissionsList.some((access: any) => accesses.includes(access.value));
+      return permissionsList.some((access) => accesses.includes(access));
     }
     throw new Error(`[hasSomePermission]: ${accesses} should be a array !`);
   }

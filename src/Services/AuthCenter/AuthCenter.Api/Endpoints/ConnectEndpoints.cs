@@ -12,8 +12,14 @@ using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace AuthCenter.Api.Endpoints;
 
+/// <summary>
+/// OpenID Connect 相关端点映射（token、userinfo）。
+/// </summary>
 public static class ConnectEndpoints
 {
+    /// <summary>
+    /// 映射 connect 分组端点。
+    /// </summary>
     public static IEndpointRouteBuilder MapConnectEndpoints(this IEndpointRouteBuilder endpoints)
     {
         var group = endpoints.MapGroup("/connect")
@@ -28,6 +34,9 @@ public static class ConnectEndpoints
         return endpoints;
     }
 
+    /// <summary>
+    /// token 交换入口，支持 password / refresh_token / client_credentials。
+    /// </summary>
     private static async Task<IResult> ExchangeAsync(
         HttpContext httpContext,
         UserManager<ApplicationUser> userManager,
@@ -126,6 +135,9 @@ public static class ConnectEndpoints
         return OpenIddictError(Errors.UnsupportedGrantType, "The specified grant type is not supported.");
     }
 
+    /// <summary>
+    /// userinfo 端点，返回当前主体的基础信息。
+    /// </summary>
     private static IResult GetUserInfoAsync(ClaimsPrincipal principal)
     {
         return Results.Ok(new
@@ -148,7 +160,7 @@ public static class ConnectEndpoints
         UserManager<ApplicationUser> userManager,
         ApplicationUser user)
     {
-        if (user.IsDeleted || await userManager.IsLockedOutAsync(user))
+        if (user.IsDeleted || !user.IsEnabled || await userManager.IsLockedOutAsync(user))
         {
             return false;
         }

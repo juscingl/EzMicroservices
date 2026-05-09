@@ -1,23 +1,31 @@
 import { defineStore } from 'pinia';
 import { store } from '@/store';
-import { ACCESS_TOKEN, CURRENT_USER, IS_SCREENLOCKED } from '@/store/mutation-types';
-import { ResultEnum } from '@/enums/httpEnum';
-
-import { getUserInfo as getUserInfoApi, login } from '@/api/system/user';
+import { ACCESS_TOKEN, CURRENT_USER, IS_SCREENLOCKED, REFRESH_TOKEN } from '@/store/mutation-types';
+import {
+  getUserInfo as getUserInfoApi,
+  login,
+  refreshAccessToken,
+  type CurrentUserProfile,
+  type LoginParams,
+} from '@/api/system/user';
 import { storage } from '@/utils/Storage';
 
 export type UserInfoType = {
-  // TODO: add your own data
   username: string;
+  userName: string;
   email: string;
+  roles?: string[];
+  permissions?: string[];
+  menus?: unknown[];
 };
 
 export interface IUserState {
   token: string;
+  refreshToken: string;
   username: string;
   welcome: string;
   avatar: string;
-  permissions: any[];
+  permissions: string[];
   info: UserInfoType;
 }
 
@@ -25,15 +33,19 @@ export const useUserStore = defineStore({
   id: 'app-user',
   state: (): IUserState => ({
     token: storage.get(ACCESS_TOKEN, ''),
+    refreshToken: storage.get(REFRESH_TOKEN, ''),
     username: '',
     welcome: '',
     avatar: '',
     permissions: [],
-    info: storage.get(CURRENT_USER, {}),
+    info: storage.get(CURRENT_USER, { username: '', userName: '', email: '' }),
   }),
   getters: {
     getToken(): string {
       return this.token;
+    },
+    getRefreshToken(): string {
+      return this.refreshToken;
     },
     getAvatar(): string {
       return this.avatar;
@@ -41,7 +53,7 @@ export const useUserStore = defineStore({
     getNickname(): string {
       return this.username;
     },
-    getPermissions(): [any][] {
+    getPermissions(): string[] {
       return this.permissions;
     },
     getUserInfo(): UserInfoType {
@@ -52,51 +64,70 @@ export const useUserStore = defineStore({
     setToken(token: string) {
       this.token = token;
     },
+    setRefreshToken(refreshToken: string) {
+      this.refreshToken = refreshToken;
+    },
     setAvatar(avatar: string) {
       this.avatar = avatar;
     },
-    setPermissions(permissions) {
+    setPermissions(permissions: string[]) {
       this.permissions = permissions;
     },
     setUserInfo(info: UserInfoType) {
       this.info = info;
+      this.username = info.username || info.userName || '';
     },
     // 登录
-    async login(params: any) {
-      const response = await login(params);
-      const { result, code } = response;
-      if (code === ResultEnum.SUCCESS) {
-        const ex = 7 * 24 * 60 * 60;
-        storage.set(ACCESS_TOKEN, result.token, ex);
-        storage.set(CURRENT_USER, result, ex);
-        storage.set(IS_SCREENLOCKED, false);
-        this.setToken(result.token);
-        this.setUserInfo(result);
+    async login(params: LoginParams) {
+      const tokenResult = await login(params);
+      const token = tokenResult.access_token;
+      const ex = Math.max(tokenResult.expires_in ?? 3600, 300);
+      storage.set(ACCESS_TOKEN, token, ex);
+      storage.set(REFRESH_TOKEN, tokenResult.refresh_token ?? '', 7 * 24 * 60 * 60);
+      storage.set(IS_SCREENLOCKED, false);
+      this.setToken(token);
+      this.setRefreshToken(tokenResult.refresh_token ?? '');
+      return tokenResult;
+    },
+
+    async refreshTokenAction() {
+      if (!this.refreshToken) {
+        throw new Error('No refresh token');
       }
-      return response;
+      const tokenResult = await refreshAccessToken({ refreshToken: this.refreshToken });
+      const token = tokenResult.access_token;
+      const ex = Math.max(tokenResult.expires_in ?? 3600, 300);
+      storage.set(ACCESS_TOKEN, token, ex);
+      storage.set(REFRESH_TOKEN, tokenResult.refresh_token ?? this.refreshToken, 7 * 24 * 60 * 60);
+      this.setToken(token);
+      this.setRefreshToken(tokenResult.refresh_token ?? this.refreshToken);
+      return tokenResult;
     },
 
     // 获取用户信息
     async getInfo() {
-      const data = await getUserInfoApi();
-      const { result } = data;
-      if (result.permissions && result.permissions.length) {
-        const permissionsList = result.permissions;
-        this.setPermissions(permissionsList);
-        this.setUserInfo(result);
-      } else {
-        throw new Error('getInfo: permissionsList must be a non-null array !');
-      }
-      this.setAvatar(result.avatar);
-      return result;
+      const result = (await getUserInfoApi()) as CurrentUserProfile;
+      const permissionsList = Array.isArray(result.permissions) ? result.permissions : [];
+      this.setPermissions(permissionsList);
+      const normalizedInfo: UserInfoType = {
+        ...result,
+        username: result.userName ?? '',
+      };
+      this.setUserInfo(normalizedInfo);
+      storage.set(CURRENT_USER, normalizedInfo, 7 * 24 * 60 * 60);
+      this.setAvatar('');
+      return normalizedInfo;
     },
 
     // 登出
     async logout() {
       this.setPermissions([]);
-      this.setUserInfo({ username: '', email: '' });
+      this.setUserInfo({ username: '', userName: '', email: '' });
       storage.remove(ACCESS_TOKEN);
+      storage.remove(REFRESH_TOKEN);
       storage.remove(CURRENT_USER);
+      this.setToken('');
+      this.setRefreshToken('');
     },
   },
 });

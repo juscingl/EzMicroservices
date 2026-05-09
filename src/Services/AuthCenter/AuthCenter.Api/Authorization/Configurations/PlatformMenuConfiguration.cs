@@ -25,6 +25,7 @@ public sealed class PlatformMenuConfiguration : IEntityTypeConfiguration<Platfor
 
         builder.Property(menu => menu.Icon).HasMaxLength(128);
         builder.Property(menu => menu.Component).HasMaxLength(256);
+        builder.Property(menu => menu.LinkUrl).HasMaxLength(512);
         builder.Property(menu => menu.Description).HasMaxLength(512);
 
         builder.HasIndex(menu => menu.Code).IsUnique();

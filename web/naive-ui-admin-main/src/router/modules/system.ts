@@ -7,7 +7,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/system',
     name: 'System',
-    redirect: '/system/menu',
+    redirect: '/system/user',
     component: Layout,
     meta: {
       title: '系统设置',
@@ -15,6 +15,14 @@ const routes: Array<RouteRecordRaw> = [
       sort: 1,
     },
     children: [
+      {
+        path: 'user',
+        name: 'system_user',
+        meta: {
+          title: '用户管理',
+        },
+        component: () => import('@/views/system/user/user.vue'),
+      },
       {
         path: 'menu',
         name: 'system_menu',
@@ -30,6 +38,14 @@ const routes: Array<RouteRecordRaw> = [
           title: '角色权限',
         },
         component: () => import('@/views/system/role/role.vue'),
+      },
+      {
+        path: 'permission',
+        name: 'system_permission',
+        meta: {
+          title: '权限配置',
+        },
+        component: () => import('@/views/system/permission/permission.vue'),
       },
     ],
   },

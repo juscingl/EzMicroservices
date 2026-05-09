@@ -10,3 +10,5 @@ src/Bff/WebBff/bin/Debug/net8.0/
 src/Services/Inventory/Inventory.Api/bin/Debug/net8.0/
 
 *.cache
+
+src/Services/AuthCenter/AuthCenter.Api/bin/Debug/net8.0/

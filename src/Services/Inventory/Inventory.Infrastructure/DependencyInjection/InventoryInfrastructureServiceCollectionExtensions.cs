@@ -8,8 +8,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Inventory.Infrastructure.DependencyInjection;
 
+/// <summary>
+/// 库存模块基础设施依赖注入扩展。
+/// </summary>
 public static class InventoryInfrastructureServiceCollectionExtensions
 {
+    /// <summary>
+    /// 注册库存模块基础设施依赖。
+    /// </summary>
     public static IServiceCollection AddInventoryInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<InventoryDbContext>(options =>

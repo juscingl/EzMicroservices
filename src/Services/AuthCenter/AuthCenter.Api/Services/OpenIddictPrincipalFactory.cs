@@ -7,12 +7,18 @@ using OpenIddict.Abstractions;
 
 namespace AuthCenter.Api.Services;
 
+/// <summary>
+/// OpenIddict Principal 构建实现，负责按用户/客户端场景生成令牌载荷。
+/// </summary>
 public sealed class OpenIddictPrincipalFactory(
     IOptions<PlatformAuthenticationOptions> authenticationOptions,
     ISeededClientRegistry seededClientRegistry) : IOpenIddictPrincipalFactory
 {
     private readonly PlatformAuthenticationOptions _authenticationOptions = authenticationOptions.Value;
 
+    /// <summary>
+    /// 为用户登录场景构建 Principal，并按 scope 过滤可下发权限。
+    /// </summary>
     public OpenIddictPrincipalFactoryResult CreateForUser(
         ApplicationUser user,
         IEnumerable<string> roles,
@@ -56,6 +62,9 @@ public sealed class OpenIddictPrincipalFactory(
         return new OpenIddictPrincipalFactoryResult(principal, scopeResolution.GrantedScopes, scopeResolution.RejectedScopes);
     }
 
+    /// <summary>
+    /// 为客户端凭据场景构建 Principal。
+    /// </summary>
     public OpenIddictPrincipalFactoryResult CreateForClient(
         string clientId,
         IEnumerable<string> requestedScopes)
@@ -80,6 +89,9 @@ public sealed class OpenIddictPrincipalFactory(
         return new OpenIddictPrincipalFactoryResult(principal, scopeResolution.GrantedScopes, scopeResolution.RejectedScopes);
     }
 
+    /// <summary>
+    /// 构建 ClaimsPrincipal 并设置 scope/resource 及 claim 目的地。
+    /// </summary>
     private ClaimsPrincipal BuildPrincipal(ClaimsIdentity identity, IReadOnlyCollection<string> grantedScopes)
     {
         var principal = new ClaimsPrincipal(identity);
@@ -141,6 +153,9 @@ public sealed class OpenIddictPrincipalFactory(
         IReadOnlyCollection<string> RejectedScopes);
 }
 
+/// <summary>
+/// Principal 构建结果，包含实际授权的 scope 以及被拒绝的 scope。
+/// </summary>
 public sealed record OpenIddictPrincipalFactoryResult(
     ClaimsPrincipal Principal,
     IReadOnlyCollection<string> GrantedScopes,

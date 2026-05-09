@@ -9,6 +9,7 @@ using Microsoft.Net.Http.Headers;
 const int InventoryHttpTimeoutSeconds = 5;
 
 var builder = WebApplication.CreateBuilder(args);
+// 加载 Nacos 配置并初始化统一可观测能力。
 builder.Configuration.AddNacosJsonConfiguration(builder.Configuration);
 builder.AddPlatformObservability("web-bff");
 
@@ -41,6 +42,7 @@ app.UsePlatformObservability();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// 聚合订单与库存信息，向前端提供单次读取接口。
 app.MapGet("/bff/orders/{id:guid}", async (
     Guid id,
     IHttpClientFactory factory,

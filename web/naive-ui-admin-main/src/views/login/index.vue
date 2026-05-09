@@ -103,7 +103,7 @@
                 </a>
               </div>
               <div class="flex-initial" style="margin-left: auto">
-                <a href="javascript:" class="register-link">注册账号</a>
+                <a href="javascript:" class="register-link" @click="goRegister">注册账号</a>
               </div>
             </div>
           </n-form-item>
@@ -118,7 +118,6 @@
   import { useRoute, useRouter } from 'vue-router';
   import { useUserStore } from '@/store/modules/user';
   import { useMessage } from 'naive-ui';
-  import { ResultEnum } from '@/enums/httpEnum';
   import { PersonOutline, LockClosedOutline, LogoGithub, LogoFacebook, LogoWechat } from '@vicons/ionicons5';
   import { PageEnum } from '@/enums/pageEnum';
   import { websiteConfig } from '@/config/website.config';
@@ -146,7 +145,7 @@
 
   const formInline = reactive({
     username: 'admin',
-    password: '123456',
+    password: 'Admin123!',
     isCaptcha: true,
   });
 
@@ -159,6 +158,10 @@
 
   const router = useRouter();
   const route = useRoute();
+
+  const goRegister = () => {
+    router.push('/register');
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -174,16 +177,16 @@
         };
 
         try {
-          const { code, message: msg } = await userStore.login(params);
+          const tokenResult = await userStore.login(params);
           message.destroyAll();
-          if (code == ResultEnum.SUCCESS) {
+          if (tokenResult.access_token) {
             const toPath = decodeURIComponent((route.query?.redirect || '/') as string);
             message.success('登录成功，即将进入系统');
             if (route.name === LOGIN_NAME) {
               router.replace('/');
             } else router.replace(toPath);
           } else {
-            message.info(msg || '登录失败');
+            message.info('登录失败');
           }
         } finally {
           loading.value = false;

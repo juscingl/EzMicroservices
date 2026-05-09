@@ -1,3 +1,4 @@
+using AuthCenter.Api.Authorization;
 using BuildingBlocks.Security.Constants;
 
 namespace AuthCenter.Api.Services;
@@ -6,15 +7,15 @@ public static class PlatformAuthorizationSeedCatalog
 {
     public static readonly IReadOnlyCollection<SeedMenu> Menus =
     [
-        new("dashboard", "Dashboard", null, "/dashboard", "layout-dashboard", "DashboardPage", 10, true, true, "Platform dashboard"),
-        new("orders", "Orders", null, "/orders", "shopping-cart", "OrdersPage", 20, true, true, "Order management"),
-        new("inventory", "Inventory", null, "/inventory", "package", "InventoryPage", 30, true, true, "Inventory management"),
-        new("payments", "Payments", null, "/payments", "wallet", "PaymentsPage", 40, true, true, "Payment management"),
-        new("security", "Security", null, "/system/security", "shield", "SecurityLayout", 50, true, true, "Identity and access control"),
-        new("security.users", "Users", "security", "/system/security/users", "users", "UsersPage", 10, true, true, "User management"),
-        new("security.roles", "Roles", "security", "/system/security/roles", "key", "RolesPage", 20, true, true, "Role management"),
-        new("security.menus", "Menus", "security", "/system/security/menus", "menu", "MenusPage", 30, true, true, "Menu management"),
-        new("security.permissions", "Permissions", "security", "/system/security/permissions", "lock", "PermissionsPage", 40, true, true, "Permission management")
+        new("dashboard", "Dashboard", null, "/dashboard", "layout-dashboard", "DashboardPage", 10, true, true, false, null, true, false, "Platform dashboard"),
+        new("orders", "Orders", null, "/orders", "shopping-cart", "OrdersPage", 20, true, true, false, null, true, false, "Order management"),
+        new("inventory", "Inventory", null, "/inventory", "package", "InventoryPage", 30, true, true, false, null, true, false, "Inventory management"),
+        new("payments", "Payments", null, "/payments", "wallet", "PaymentsPage", 40, true, true, false, null, true, false, "Payment management"),
+        new("security", "Security", null, "/system/security", "shield", "SecurityLayout", 50, true, true, false, null, true, false, "Identity and access control"),
+        new("security.users", "Users", "security", "/system/security/users", "users", "UsersPage", 10, true, true, false, null, true, false, "User management"),
+        new("security.roles", "Roles", "security", "/system/security/roles", "key", "RolesPage", 20, true, true, false, null, true, false, "Role management"),
+        new("security.menus", "Menus", "security", "/system/security/menus", "menu", "MenusPage", 30, true, true, false, null, true, false, "Menu management"),
+        new("security.permissions", "Permissions", "security", "/system/security/permissions", "lock", "PermissionsPage", 40, true, true, false, null, true, false, "Permission management")
     ];
 
     public static readonly IReadOnlyCollection<SeedPermission> Permissions = BuildPermissions();
@@ -23,9 +24,29 @@ public static class PlatformAuthorizationSeedCatalog
     {
         var permissions = new List<SeedPermission>
         {
-            Permission(PlatformPermissions.DashboardView, "Dashboard.View", "dashboard", "dashboard", "view", "page", 10, "View dashboard"),
+            Permission(
+                PlatformPermissions.DashboardView,
+                "Dashboard.View",
+                "dashboard",
+                "dashboard",
+                "view",
+                PlatformPermissionConstants.PermissionTypePage,
+                PlatformPermissionConstants.ScopePage,
+                "dashboard",
+                10,
+                "View dashboard"),
 
-            Permission(PlatformPermissions.OrdersMenu, "Orders.Menu", "orders", "orders", "menu", "menu", 10, "Access orders menu"),
+            Permission(
+                PlatformPermissions.OrdersMenu,
+                "Orders.Menu",
+                "orders",
+                "orders",
+                "menu",
+                PlatformPermissionConstants.PermissionTypeMenu,
+                PlatformPermissionConstants.ScopeMenu,
+                "orders",
+                10,
+                "Access orders menu"),
             Permission(PlatformPermissions.OrdersRead, "Orders.Read", "orders", "orders", "read", "scope", 20, "Order read scope"),
             Permission(PlatformPermissions.OrdersWrite, "Orders.Write", "orders", "orders", "write", "scope", 30, "Order write scope"),
             Permission(PlatformPermissions.OrdersView, "Orders.View", "orders", "orders", "view", "page", 40, "View orders list"),
@@ -88,7 +109,17 @@ public static class PlatformAuthorizationSeedCatalog
             Permission(PlatformPermissions.PermissionsCreate, "Permissions.Create", "security.permissions", "permissions", "create", "action", 250, "Create permission"),
             Permission(PlatformPermissions.PermissionsEdit, "Permissions.Edit", "security.permissions", "permissions", "edit", "action", 260, "Edit permission"),
             Permission(PlatformPermissions.PermissionsDelete, "Permissions.Delete", "security.permissions", "permissions", "delete", "action", 270, "Delete permission"),
-            Permission(PlatformPermissions.PermissionsExport, "Permissions.Export", "security.permissions", "permissions", "export", "action", 280, "Export permissions")
+            Permission(
+                PlatformPermissions.PermissionsExport,
+                "Permissions.Export",
+                "security.permissions",
+                "permissions",
+                "export",
+                PlatformPermissionConstants.PermissionTypeAction,
+                PlatformPermissionConstants.ScopeApi,
+                "security",
+                280,
+                "Export permissions")
         };
 
         return permissions;
@@ -104,7 +135,32 @@ public static class PlatformAuthorizationSeedCatalog
         int sort,
         string description)
     {
-        return new SeedPermission(code, name, menuCode, resource, action, permissionType, sort, true, true, description);
+        return Permission(
+            code,
+            name,
+            menuCode,
+            resource,
+            action,
+            permissionType,
+            PlatformPermissionConstants.ScopeApi,
+            resource,
+            sort,
+            description);
+    }
+
+    private static SeedPermission Permission(
+        string code,
+        string name,
+        string menuCode,
+        string resource,
+        string action,
+        string permissionType,
+        string scope,
+        string groupName,
+        int sort,
+        string description)
+    {
+        return new SeedPermission(code, name, menuCode, resource, action, permissionType, scope, groupName, sort, true, true, description);
     }
 }
 
@@ -118,6 +174,10 @@ public sealed record SeedMenu(
     int Sort,
     bool IsVisible,
     bool IsEnabled,
+    bool IsExternal,
+    string? LinkUrl,
+    bool KeepAlive,
+    bool HideInBreadcrumb,
     string? Description);
 
 public sealed record SeedPermission(
@@ -127,6 +187,8 @@ public sealed record SeedPermission(
     string Resource,
     string Action,
     string PermissionType,
+    string Scope,
+    string GroupName,
     int Sort,
     bool IsSystem,
     bool IsEnabled,

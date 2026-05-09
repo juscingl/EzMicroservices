@@ -6,7 +6,10 @@ namespace AuthCenter.Api.Models.Authorization;
 public sealed record CurrentUserProfileResponse(
     Guid Id,
     string UserName,
+    string DisplayName,
     string Email,
+    string? PhoneNumber,
+    bool IsEnabled,
     IReadOnlyCollection<string> Roles,
     IReadOnlyCollection<string> Permissions,
     IReadOnlyCollection<string> DirectPermissions,

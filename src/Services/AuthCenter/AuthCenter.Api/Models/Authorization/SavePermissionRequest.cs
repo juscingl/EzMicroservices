@@ -1,5 +1,8 @@
 namespace AuthCenter.Api.Models.Authorization;
 
+/// <summary>
+/// 新增或更新权限请求模型。
+/// </summary>
 public sealed record SavePermissionRequest(
     Guid? MenuId,
     string Code,
@@ -7,6 +10,8 @@ public sealed record SavePermissionRequest(
     string Resource,
     string Action,
     string PermissionType,
+    string Scope,
+    string? GroupName,
     int Sort,
     bool IsSystem,
     bool IsEnabled,

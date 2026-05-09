@@ -1,4 +1,4 @@
-import { adminMenus } from '@/api/system/menu';
+import { adminMenus, type BackendMenuNode } from '@/api/system/menu';
 import { constantRouterIcon } from './icons';
 import { RouteRecordRaw } from 'vue-router';
 import { Layout, ParentLayout } from '@/router/constant';
@@ -49,13 +49,56 @@ export const generateRoutes = (routerMap, parent?): any[] => {
   });
 };
 
+const ROOT_LAYOUT_ROUTE = '/';
+
+function normalizeRoutePath(route: string): string {
+  if (!route) return '/';
+  return route.startsWith('/') ? route : `/${route}`;
+}
+
+function toViewComponentPath(component?: string): string {
+  if (!component) return '';
+  return component.startsWith('/') ? component : `/${component}`;
+}
+
+function mapBackendMenusToRoutes(menus: BackendMenuNode[]): any[] {
+  const mapMenuNode = (node: BackendMenuNode, parentFullPath?: string): any => {
+    const normalizedPath = normalizeRoutePath(node.route);
+    const isLayoutRoute = normalizedPath === ROOT_LAYOUT_ROUTE;
+    const children = (node.children ?? []).map((child) => mapMenuNode(child, normalizedPath));
+    const component = isLayoutRoute ? 'LAYOUT' : toViewComponentPath(node.component);
+    const fullPath = isLayoutRoute ? '/dashboard' : normalizedPath;
+    const path =
+      parentFullPath && fullPath.startsWith(`${parentFullPath}/`)
+        ? fullPath.substring(parentFullPath.length + 1)
+        : fullPath;
+    const route: any = {
+      path,
+      name: node.code,
+      component,
+      meta: {
+        title: node.name,
+        icon: node.icon,
+        sort: node.sort,
+        hidden: !node.isVisible,
+      },
+      children,
+    };
+    if (isLayoutRoute) {
+      route.redirect = children[0]?.path ? `/dashboard/${children[0].path}` : '/dashboard/console';
+    }
+    return route;
+  };
+  return menus.filter((menu) => menu.isEnabled).map((menu) => mapMenuNode(menu));
+}
+
 /**
  * 动态生成菜单
  * @returns {Promise<Router>}
  */
 export const generateDynamicRoutes = async (): Promise<RouteRecordRaw[]> => {
-  const result = await adminMenus();
-  const router = generateRoutes(result);
+  const backendMenus = await adminMenus();
+  const router = mapBackendMenusToRoutes(backendMenus);
   asyncImportRoute(router);
   return router;
 };

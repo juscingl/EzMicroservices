@@ -53,6 +53,9 @@ namespace AuthCenter.Api.EntityFrameworkCore.Migrations
                         .HasMaxLength(512)
                         .HasColumnType("character varying(512)");
 
+                    b.Property<bool>("HideInBreadcrumb")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Icon")
                         .HasMaxLength(128)
                         .HasColumnType("character varying(128)");
@@ -63,7 +66,13 @@ namespace AuthCenter.Api.EntityFrameworkCore.Migrations
                     b.Property<bool>("IsEnabled")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("IsExternal")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("IsVisible")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("KeepAlive")
                         .HasColumnType("boolean");
 
                     b.Property<DateTimeOffset?>("LastModificationTime")
@@ -71,6 +80,10 @@ namespace AuthCenter.Api.EntityFrameworkCore.Migrations
 
                     b.Property<Guid?>("LastModifierId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("LinkUrl")
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -130,6 +143,10 @@ namespace AuthCenter.Api.EntityFrameworkCore.Migrations
                         .HasMaxLength(512)
                         .HasColumnType("character varying(512)");
 
+                    b.Property<string>("GroupName")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
@@ -159,6 +176,11 @@ namespace AuthCenter.Api.EntityFrameworkCore.Migrations
                         .HasColumnType("character varying(64)");
 
                     b.Property<string>("Resource")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<string>("Scope")
                         .IsRequired()
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
@@ -224,6 +246,11 @@ namespace AuthCenter.Api.EntityFrameworkCore.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("text");
@@ -240,7 +267,14 @@ namespace AuthCenter.Api.EntityFrameworkCore.Migrations
                     b.Property<DateTimeOffset?>("DeletionTime")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Description")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsEnabled")
                         .HasColumnType("boolean");
 
                     b.Property<DateTimeOffset?>("LastModificationTime")
@@ -257,7 +291,13 @@ namespace AuthCenter.Api.EntityFrameworkCore.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
+                    b.Property<int>("Sort")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
@@ -291,6 +331,11 @@ namespace AuthCenter.Api.EntityFrameworkCore.Migrations
                     b.Property<DateTimeOffset?>("DeletionTime")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
@@ -299,6 +344,9 @@ namespace AuthCenter.Api.EntityFrameworkCore.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsEnabled")
                         .HasColumnType("boolean");
 
                     b.Property<DateTimeOffset?>("LastModificationTime")

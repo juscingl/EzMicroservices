@@ -36,6 +36,58 @@ const mockAdapter = createAlovaMockAdapter([...mocks], {
   },
 });
 
+let refreshTokenPromise: Promise<string> | null = null;
+
+async function parseResponseBody(response: Response) {
+  try {
+    return await response.clone().json();
+  } catch {
+    return response.body;
+  }
+}
+
+async function ensureAccessTokenAsync() {
+  const userStore = useUser();
+  if (refreshTokenPromise) {
+    return refreshTokenPromise;
+  }
+
+  refreshTokenPromise = (async () => {
+    const tokenResult = await userStore.refreshTokenAction();
+    return tokenResult.access_token;
+  })();
+
+  try {
+    return await refreshTokenPromise;
+  } finally {
+    refreshTokenPromise = null;
+  }
+}
+
+function handleAuthExpired() {
+  const Message = window['$message'];
+  Message?.warning('登录已过期，请重新登录');
+  storage.clear();
+  window.location.href = PageEnum.BASE_LOGIN;
+}
+
+async function replayRequestWithToken(method: any, token: string) {
+  const requestInit: RequestInit = {
+    method: method.type ?? method.config?.method ?? 'GET',
+    headers: {
+      ...(method.config?.headers ?? {}),
+      Authorization: `Bearer ${token}`,
+    },
+    body: method.data ?? method.config?.data,
+  };
+
+  const retryResponse = await fetch(method.url as string, requestInit);
+  if (retryResponse.status === 401) {
+    throw new Error('Session refresh failed');
+  }
+  return parseResponseBody(retryResponse);
+}
+
 export const Alova = createAlova({
   baseURL: apiUrl,
   statesHook: VueHook,
@@ -59,9 +111,9 @@ export const Alova = createAlova({
   beforeRequest(method) {
     const userStore = useUser();
     const token = userStore.getToken;
-    // 添加 token 到请求头
+    // 默认使用 Bearer 方案向后端传递访问令牌。
     if (!method.meta?.ignoreToken && token) {
-      method.config.headers['token'] = token;
+      method.config.headers.Authorization = `Bearer ${token}`;
     }
     // 处理 api 请求前缀
     const isUrlStr = isUrl(method.url as string);
@@ -74,7 +126,19 @@ export const Alova = createAlova({
   },
   responded: {
     onSuccess: async (response, method) => {
-      const res = (response.json && (await response.json())) || response.body;
+      let res = await parseResponseBody(response);
+
+      if (response.status === 401 && !method.meta?.ignoreAutoRefresh) {
+        try {
+          const token = await ensureAccessTokenAsync();
+          res = await replayRequestWithToken(method, token);
+        } catch {
+          const userStore = useUser();
+          await userStore.logout();
+          handleAuthExpired();
+          throw new Error('Authentication expired');
+        }
+      }
 
       // 是否返回原生响应头 比如：需要获取响应头时使用该属性
       if (method.meta?.isReturnNativeResponse) {
@@ -86,7 +150,7 @@ export const Alova = createAlova({
       // 不进行任何处理，直接返回
       // 用于需要直接获取 code、result、 message 这些信息时开启
       if (method.meta?.isTransformResponse === false) {
-        return res.data;
+        return res;
       }
 
       // @ts-ignore
@@ -98,8 +162,8 @@ export const Alova = createAlova({
       if (ResultEnum.SUCCESS === code) {
         return result;
       }
-      // 需要登录
-      if (code === 912) {
+      // 兼容后端返回 401/912 两种会话失效语义。
+      if (code === 912 || code === 401 || response.status === 401) {
         Modal?.warning({
           title: '提示',
           content: '登录身份已失效，请重新登录!',
@@ -116,6 +180,20 @@ export const Alova = createAlova({
         Message?.error(message);
         throw new Error(message);
       }
+    },
+    onError: async (error, method) => {
+      const status = error?.status ?? error?.response?.status;
+      if (status === 401 && !method?.meta?.ignoreAutoRefresh) {
+        try {
+          await ensureAccessTokenAsync();
+          return;
+        } catch {
+          const userStore = useUser();
+          await userStore.logout();
+          handleAuthExpired();
+        }
+      }
+      throw error;
     },
   },
 });

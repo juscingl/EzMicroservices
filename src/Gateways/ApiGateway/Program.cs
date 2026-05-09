@@ -6,12 +6,14 @@ using BuildingBlocks.Security.DependencyInjection;
 using Yarp.ReverseProxy.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
+// 加载 Nacos 配置并初始化统一可观测能力。
 builder.Configuration.AddNacosJsonConfiguration(builder.Configuration);
 builder.AddPlatformObservability("api-gateway");
 
 builder.Services.AddPlatformNacos(builder.Configuration, "api-gateway");
 builder.Services.AddPlatformAuthentication(builder.Configuration);
 builder.Services.AddPlatformAuthorization();
+// 使用内存路由配置 YARP，统一接入各后端服务。
 builder.Services.AddReverseProxy().LoadFromMemory(
     routes:
     [
@@ -114,5 +116,6 @@ var app = builder.Build();
 app.UsePlatformObservability();
 app.UseAuthentication();
 app.UseAuthorization();
+// 网关所有流量最终通过反向代理转发到下游。
 app.MapReverseProxy();
 app.Run();

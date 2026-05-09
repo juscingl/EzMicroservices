@@ -31,7 +31,21 @@ public sealed class AuthCenterDbContext(
         base.OnModelCreating(builder);
 
         builder.Entity<ApplicationUser>().ToTable("auth_users");
+        builder.Entity<ApplicationUser>()
+            .Property(user => user.DisplayName)
+            .HasMaxLength(128)
+            .IsRequired();
         builder.Entity<ApplicationRole>().ToTable("auth_roles");
+        builder.Entity<ApplicationRole>()
+            .Property(role => role.Description)
+            .HasMaxLength(256);
+        builder.Entity<ApplicationRole>()
+            .Property(role => role.Code)
+            .HasMaxLength(64)
+            .IsRequired();
+        builder.Entity<ApplicationRole>()
+            .HasIndex(role => role.Code)
+            .IsUnique();
         builder.Entity<IdentityUserRole<Guid>>().ToTable("auth_user_roles");
         builder.Entity<IdentityUserClaim<Guid>>().ToTable("auth_user_claims");
         builder.Entity<IdentityUserLogin<Guid>>().ToTable("auth_user_logins");

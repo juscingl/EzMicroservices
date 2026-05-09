@@ -6,8 +6,14 @@ using BuildingBlocks.Security.Authorization;
 
 namespace AuthCenter.Api.Endpoints;
 
+/// <summary>
+/// 身份与权限管理端点映射。
+/// </summary>
 public static class IdentityManagementEndpoints
 {
+    /// <summary>
+    /// 映射 /auth 下的用户、角色、菜单、权限管理接口。
+    /// </summary>
     public static IEndpointRouteBuilder MapIdentityManagementEndpoints(this IEndpointRouteBuilder endpoints)
     {
         var group = endpoints.MapGroup("/auth")
@@ -37,13 +43,22 @@ public static class IdentityManagementEndpoints
         group.MapPut("/users/{id:guid}/permissions", UpdateUserPermissionsAsync)
             .RequireAuthorization(PlatformAuthorizationPolicies.UsersWrite);
 
+        group.MapDelete("/users/{id:guid}", DeleteUserAsync)
+            .RequireAuthorization(PlatformAuthorizationPolicies.UsersWrite);
+
         group.MapGet("/roles", GetRolesAsync)
             .RequireAuthorization(PlatformAuthorizationPolicies.RolesRead);
 
         group.MapPost("/roles", CreateRoleAsync)
             .RequireAuthorization(PlatformAuthorizationPolicies.RolesWrite);
 
+        group.MapPut("/roles/{id:guid}", UpdateRoleAsync)
+            .RequireAuthorization(PlatformAuthorizationPolicies.RolesWrite);
+
         group.MapPut("/roles/{id:guid}/permissions", UpdateRolePermissionsAsync)
+            .RequireAuthorization(PlatformAuthorizationPolicies.RolesWrite);
+
+        group.MapDelete("/roles/{id:guid}", DeleteRoleAsync)
             .RequireAuthorization(PlatformAuthorizationPolicies.RolesWrite);
 
         group.MapGet("/menus", GetMenusAsync)
@@ -55,6 +70,9 @@ public static class IdentityManagementEndpoints
         group.MapPut("/menus/{id:guid}", UpdateMenuAsync)
             .RequireAuthorization(PlatformAuthorizationPolicies.MenusWrite);
 
+        group.MapDelete("/menus/{id:guid}", DeleteMenuAsync)
+            .RequireAuthorization(PlatformAuthorizationPolicies.MenusWrite);
+
         group.MapGet("/permissions", GetPermissionsAsync)
             .RequireAuthorization(PlatformAuthorizationPolicies.PermissionsRead);
 
@@ -62,6 +80,9 @@ public static class IdentityManagementEndpoints
             .RequireAuthorization(PlatformAuthorizationPolicies.PermissionsWrite);
 
         group.MapPut("/permissions/{id:guid}", UpdatePermissionAsync)
+            .RequireAuthorization(PlatformAuthorizationPolicies.PermissionsWrite);
+
+        group.MapDelete("/permissions/{id:guid}", DeletePermissionAsync)
             .RequireAuthorization(PlatformAuthorizationPolicies.PermissionsWrite);
 
         return endpoints;
@@ -178,6 +199,15 @@ public static class IdentityManagementEndpoints
         }
     }
 
+    private static async Task<IResult> DeleteUserAsync(
+        Guid id,
+        IAuthorizationManagementService authorizationManagementService,
+        CancellationToken cancellationToken)
+    {
+        var deleted = await authorizationManagementService.DeleteUserAsync(id, cancellationToken);
+        return deleted ? Results.NoContent() : Results.NotFound();
+    }
+
     private static async Task<IResult> GetRolesAsync(
         IAuthorizationManagementService authorizationManagementService,
         CancellationToken cancellationToken)
@@ -218,6 +248,32 @@ public static class IdentityManagementEndpoints
         }
     }
 
+    private static async Task<IResult> UpdateRoleAsync(
+        Guid id,
+        UpdateRoleRequest request,
+        IAuthorizationManagementService authorizationManagementService,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var role = await authorizationManagementService.UpdateRoleAsync(id, request, cancellationToken);
+            return role is null ? Results.NotFound() : Results.Ok(role);
+        }
+        catch (InvalidOperationException exception)
+        {
+            return Results.BadRequest(new { message = exception.Message });
+        }
+    }
+
+    private static async Task<IResult> DeleteRoleAsync(
+        Guid id,
+        IAuthorizationManagementService authorizationManagementService,
+        CancellationToken cancellationToken)
+    {
+        var deleted = await authorizationManagementService.DeleteRoleAsync(id, cancellationToken);
+        return deleted ? Results.NoContent() : Results.NotFound();
+    }
+
     private static async Task<IResult> GetMenusAsync(
         IAuthorizationManagementService authorizationManagementService,
         CancellationToken cancellationToken)
@@ -251,6 +307,22 @@ public static class IdentityManagementEndpoints
         {
             var menu = await authorizationManagementService.SaveMenuAsync(id, request, cancellationToken);
             return Results.Ok(menu);
+        }
+        catch (InvalidOperationException exception)
+        {
+            return Results.BadRequest(new { message = exception.Message });
+        }
+    }
+
+    private static async Task<IResult> DeleteMenuAsync(
+        Guid id,
+        IAuthorizationManagementService authorizationManagementService,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var deleted = await authorizationManagementService.DeleteMenuAsync(id, cancellationToken);
+            return deleted ? Results.NoContent() : Results.NotFound();
         }
         catch (InvalidOperationException exception)
         {
@@ -296,6 +368,15 @@ public static class IdentityManagementEndpoints
         {
             return Results.BadRequest(new { message = exception.Message });
         }
+    }
+
+    private static async Task<IResult> DeletePermissionAsync(
+        Guid id,
+        IAuthorizationManagementService authorizationManagementService,
+        CancellationToken cancellationToken)
+    {
+        var deleted = await authorizationManagementService.DeletePermissionAsync(id, cancellationToken);
+        return deleted ? Results.NoContent() : Results.NotFound();
     }
 
     private static Guid? GetUserId(ClaimsPrincipal principal)

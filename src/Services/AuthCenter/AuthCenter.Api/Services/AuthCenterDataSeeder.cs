@@ -12,6 +12,9 @@ using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace AuthCenter.Api.Services;
 
+/// <summary>
+/// 认证中心默认数据播种实现：初始化 scope、客户端、菜单、权限、角色与管理员账户。
+/// </summary>
 public sealed class AuthCenterDataSeeder(
     AuthCenterDbContext dbContext,
     RoleManager<ApplicationRole> roleManager,
@@ -25,6 +28,9 @@ public sealed class AuthCenterDataSeeder(
     private readonly AuthCenterSeedOptions _seedOptions = seedOptions.Value;
     private readonly PlatformAuthenticationOptions _authenticationOptions = authenticationOptions.Value;
 
+    /// <summary>
+    /// 执行全量播种流程。
+    /// </summary>
     public async Task SeedAsync(CancellationToken cancellationToken = default)
     {
         await EnsureScopesAsync(cancellationToken);
@@ -128,6 +134,10 @@ public sealed class AuthCenterDataSeeder(
             menu.Sort = seedMenu.Sort;
             menu.IsVisible = seedMenu.IsVisible;
             menu.IsEnabled = seedMenu.IsEnabled;
+            menu.IsExternal = seedMenu.IsExternal;
+            menu.LinkUrl = seedMenu.LinkUrl;
+            menu.KeepAlive = seedMenu.KeepAlive;
+            menu.HideInBreadcrumb = seedMenu.HideInBreadcrumb;
             menu.Description = seedMenu.Description;
             menu.IsDeleted = false;
             menu.DeletionTime = null;
@@ -173,6 +183,8 @@ public sealed class AuthCenterDataSeeder(
             permission.Resource = seedPermission.Resource;
             permission.Action = seedPermission.Action;
             permission.PermissionType = seedPermission.PermissionType;
+            permission.Scope = seedPermission.Scope;
+            permission.GroupName = seedPermission.GroupName;
             permission.Sort = seedPermission.Sort;
             permission.IsSystem = seedPermission.IsSystem;
             permission.IsEnabled = seedPermission.IsEnabled;
@@ -192,10 +204,26 @@ public sealed class AuthCenterDataSeeder(
             var role = await roleManager.FindByNameAsync(rolePermission.Key);
             if (role is not null)
             {
+                role.IsEnabled = true;
+                role.Code = string.IsNullOrWhiteSpace(role.Code)
+                    ? rolePermission.Key.ToLowerInvariant()
+                    : role.Code;
+                role.Sort = role.Sort == 0 ? 100 : role.Sort;
+                if (string.IsNullOrWhiteSpace(role.Description))
+                {
+                    role.Description = $"{rolePermission.Key} role";
+                }
+                await roleManager.UpdateAsync(role);
                 continue;
             }
 
-            var createRoleResult = await roleManager.CreateAsync(new ApplicationRole(rolePermission.Key));
+            var createRoleResult = await roleManager.CreateAsync(new ApplicationRole(rolePermission.Key)
+            {
+                Code = rolePermission.Key.ToLowerInvariant(),
+                Sort = 100,
+                Description = $"{rolePermission.Key} role",
+                IsEnabled = true
+            });
             if (!createRoleResult.Succeeded)
             {
                 var errors = string.Join(", ", createRoleResult.Errors.Select(error => error.Description));
@@ -260,7 +288,9 @@ public sealed class AuthCenterDataSeeder(
             {
                 Id = Guid.NewGuid(),
                 UserName = admin.UserName,
+                DisplayName = admin.UserName,
                 Email = admin.Email,
+                IsEnabled = true,
                 EmailConfirmed = true
             };
 
@@ -271,6 +301,10 @@ public sealed class AuthCenterDataSeeder(
                 throw new InvalidOperationException($"Failed to seed admin user: {errors}");
             }
         }
+
+        adminUser.DisplayName = string.IsNullOrWhiteSpace(adminUser.DisplayName) ? adminUser.UserName ?? "admin" : adminUser.DisplayName;
+        adminUser.IsEnabled = true;
+        await userManager.UpdateAsync(adminUser);
 
         if (!await userManager.IsInRoleAsync(adminUser, PlatformRoles.Admin))
         {

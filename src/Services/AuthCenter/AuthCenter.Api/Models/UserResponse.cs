@@ -8,7 +8,10 @@ namespace AuthCenter.Api.Models;
 public sealed record UserResponse(
     Guid Id,
     string UserName,
+    string DisplayName,
     string Email,
+    string? PhoneNumber,
+    bool IsEnabled,
     IReadOnlyCollection<string> Roles,
     IReadOnlyCollection<string> Permissions,
     IReadOnlyCollection<string> DirectPermissions,

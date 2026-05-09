@@ -6,8 +6,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AuthCenter.Api.Services;
 
+/// <summary>
+/// 权限授予解析器实现，负责汇总角色权限、用户直授权限和可见菜单。
+/// </summary>
 public sealed class PermissionGrantResolver(AuthCenterDbContext dbContext) : IPermissionGrantResolver
 {
+    /// <summary>
+    /// 按角色名集合解析权限编码。
+    /// </summary>
     public async Task<IReadOnlyCollection<string>> GetRolePermissionCodesAsync(
         IEnumerable<string> roleNames,
         CancellationToken cancellationToken = default)
@@ -24,7 +30,7 @@ public sealed class PermissionGrantResolver(AuthCenterDbContext dbContext) : IPe
 
         var roleIds = await dbContext.Set<ApplicationRole>()
             .AsNoTracking()
-            .Where(role => role.Name != null && distinctRoleNames.Contains(role.Name))
+            .Where(role => role.Name != null && role.IsEnabled && distinctRoleNames.Contains(role.Name))
             .Select(role => role.Id)
             .ToArrayAsync(cancellationToken);
 
@@ -42,6 +48,9 @@ public sealed class PermissionGrantResolver(AuthCenterDbContext dbContext) : IPe
             .ToArrayAsync(cancellationToken);
     }
 
+    /// <summary>
+    /// 查询用户直授权限编码。
+    /// </summary>
     public async Task<IReadOnlyCollection<string>> GetUserDirectPermissionCodesAsync(
         Guid userId,
         CancellationToken cancellationToken = default)
@@ -60,6 +69,9 @@ public sealed class PermissionGrantResolver(AuthCenterDbContext dbContext) : IPe
             .ToArrayAsync(cancellationToken);
     }
 
+    /// <summary>
+    /// 汇总用户有效权限（角色权限 + 用户直授权限）。
+    /// </summary>
     public async Task<IReadOnlyCollection<string>> GetUserPermissionCodesAsync(
         Guid userId,
         IEnumerable<string> roleNames,
@@ -77,6 +89,9 @@ public sealed class PermissionGrantResolver(AuthCenterDbContext dbContext) : IPe
         return permissions.ToArray();
     }
 
+    /// <summary>
+    /// 根据权限编码构建可见菜单树。
+    /// </summary>
     public async Task<IReadOnlyCollection<MenuNodeResponse>> GetMenusAsync(
         IEnumerable<string> permissionCodes,
         CancellationToken cancellationToken = default)
@@ -172,6 +187,10 @@ public sealed class PermissionGrantResolver(AuthCenterDbContext dbContext) : IPe
                 menu.Sort,
                 menu.IsVisible,
                 menu.IsEnabled,
+                menu.IsExternal,
+                menu.LinkUrl,
+                menu.KeepAlive,
+                menu.HideInBreadcrumb,
                 BuildNodes(menu.Id, childrenLookup)))
             .ToArray();
     }
@@ -196,6 +215,10 @@ public sealed class PermissionGrantResolver(AuthCenterDbContext dbContext) : IPe
                 menu.Sort,
                 menu.IsVisible,
                 menu.IsEnabled,
+                menu.IsExternal,
+                menu.LinkUrl,
+                menu.KeepAlive,
+                menu.HideInBreadcrumb,
                 BuildNodes(menu.Id, childrenLookup)))
             .ToArray();
     }

@@ -1,25 +1,11 @@
 services:
-  postgres:
-    image: postgres:16
-    container_name: eztrade-postgres
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: ordersdb
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-      - ./docker/postgres/init:/docker-entrypoint-initdb.d
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-
   rabbitmq:
     image: rabbitmq:4.1.8-management
     container_name: eztrade-rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-guest}
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -29,9 +15,23 @@ services:
       timeout: 10s
       retries: 10
 
+  nacos:
+    image: nacos/nacos-server:v2.5.2
+    container_name: eztrade-nacos
+    restart: unless-stopped
+    environment:
+      MODE: standalone
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+      - "9849:9849"
+    volumes:
+      - nacosdata:/home/nacos/data
+
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:9.3.0
     container_name: eztrade-elasticsearch
+    restart: unless-stopped
     environment:
       discovery.type: single-node
       xpack.security.enabled: "false"
@@ -50,6 +50,7 @@ services:
   kibana:
     image: docker.elastic.co/kibana/kibana:9.3.0
     container_name: eztrade-kibana
+    restart: unless-stopped
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -61,6 +62,7 @@ services:
   logstash:
     image: docker.elastic.co/logstash/logstash:9.3.0
     container_name: eztrade-logstash
+    restart: unless-stopped
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -74,6 +76,7 @@ services:
   filebeat:
     image: docker.elastic.co/beats/filebeat:9.3.0
     container_name: eztrade-filebeat
+    restart: unless-stopped
     user: root
     command: ["--strict.perms=false"]
     depends_on:
@@ -83,19 +86,200 @@ services:
       - ./docker/elk/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
       - ./src:/workspace/src:ro
 
-  nacos:
-    image: nacos/nacos-server:v2.5.2
-    container_name: eztrade-nacos
+  auth-center:
+    build:
+      context: .
+      dockerfile: src/Services/AuthCenter/AuthCenter.Api/Dockerfile
+    image: eztrade/auth-center:latest
+    container_name: eztrade-auth-center
+    restart: unless-stopped
+    depends_on:
+      nacos:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
     environment:
-      MODE: standalone
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:80
+      ConnectionStrings__Default: Host=${POSTGRES_HOST};Port=${POSTGRES_PORT:-5432};Database=authdb;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      Authentication__Issuer: ${AUTH_CENTER_ISSUER:-http://auth-center}
+      Authentication__Authority: ${AUTH_CENTER_AUTHORITY:-http://auth-center}
+      Authentication__Audience: eztrade-platform
+      Nacos__Enabled: "true"
+      Nacos__RegisterService: "true"
+      Nacos__ServerAddress: http://nacos:8848
+      RabbitMq__Enabled: "true"
+      RabbitMq__HostName: rabbitmq
+      RabbitMq__Port: "5672"
+      RabbitMq__UserName: ${RABBITMQ_USER:-guest}
+      RabbitMq__Password: ${RABBITMQ_PASSWORD:-guest}
+      Elasticsearch__Enabled: "true"
+      Elasticsearch__Uri: http://elasticsearch:9200
+      Seed__Admin__Password: ${SEED_ADMIN_PASSWORD:-Admin123!}
+      Seed__Clients__1__ClientSecret: ${SEED_SERVICE_CLIENT_SECRET:-EzTrade.Service.Secret!ChangeMe}
     ports:
-      - "8848:8848"
-      - "9848:9848"
-      - "9849:9849"
-    volumes:
-      - nacosdata:/home/nacos/data
+      - "5085:80"
+
+  orders-api:
+    build:
+      context: .
+      dockerfile: src/Services/Orders/Orders.Api/Dockerfile
+    image: eztrade/orders-api:latest
+    container_name: eztrade-orders-api
+    restart: unless-stopped
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      nacos:
+        condition: service_started
+      auth-center:
+        condition: service_started
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:80
+      ConnectionStrings__Default: Host=${POSTGRES_HOST};Port=${POSTGRES_PORT:-5432};Database=ordersdb;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      Authentication__Issuer: ${AUTH_CENTER_ISSUER:-http://auth-center}
+      Authentication__Authority: ${AUTH_CENTER_AUTHORITY:-http://auth-center}
+      Authentication__Audience: eztrade-platform
+      Nacos__Enabled: "true"
+      Nacos__RegisterService: "true"
+      Nacos__ServerAddress: http://nacos:8848
+      RabbitMq__Enabled: "true"
+      RabbitMq__HostName: rabbitmq
+      RabbitMq__Port: "5672"
+      RabbitMq__UserName: ${RABBITMQ_USER:-guest}
+      RabbitMq__Password: ${RABBITMQ_PASSWORD:-guest}
+      Elasticsearch__Enabled: "true"
+      Elasticsearch__Uri: http://elasticsearch:9200
+    ports:
+      - "5239:80"
+
+  inventory-api:
+    build:
+      context: .
+      dockerfile: src/Services/Inventory/Inventory.Api/Dockerfile
+    image: eztrade/inventory-api:latest
+    container_name: eztrade-inventory-api
+    restart: unless-stopped
+    depends_on:
+      nacos:
+        condition: service_started
+      auth-center:
+        condition: service_started
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:80
+      ConnectionStrings__Default: Host=${POSTGRES_HOST};Port=${POSTGRES_PORT:-5432};Database=inventorydb;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      Authentication__Issuer: ${AUTH_CENTER_ISSUER:-http://auth-center}
+      Authentication__Authority: ${AUTH_CENTER_AUTHORITY:-http://auth-center}
+      Authentication__Audience: eztrade-platform
+      Nacos__Enabled: "true"
+      Nacos__RegisterService: "true"
+      Nacos__ServerAddress: http://nacos:8848
+    ports:
+      - "5270:80"
+
+  payments-api:
+    build:
+      context: .
+      dockerfile: src/Services/Payments/Payments.Api/Dockerfile
+    image: eztrade/payments-api:latest
+    container_name: eztrade-payments-api
+    restart: unless-stopped
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      nacos:
+        condition: service_started
+      auth-center:
+        condition: service_started
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:80
+      ConnectionStrings__Default: Host=${POSTGRES_HOST};Port=${POSTGRES_PORT:-5432};Database=paymentsdb;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      Authentication__Issuer: ${AUTH_CENTER_ISSUER:-http://auth-center}
+      Authentication__Authority: ${AUTH_CENTER_AUTHORITY:-http://auth-center}
+      Authentication__Audience: eztrade-platform
+      Nacos__Enabled: "true"
+      Nacos__RegisterService: "true"
+      Nacos__ServerAddress: http://nacos:8848
+      RabbitMq__Enabled: "true"
+      RabbitMq__HostName: rabbitmq
+      RabbitMq__Port: "5672"
+      RabbitMq__UserName: ${RABBITMQ_USER:-guest}
+      RabbitMq__Password: ${RABBITMQ_PASSWORD:-guest}
+    ports:
+      - "5066:80"
+
+  web-bff:
+    build:
+      context: .
+      dockerfile: src/Bff/WebBff/Dockerfile
+    image: eztrade/web-bff:latest
+    container_name: eztrade-web-bff
+    restart: unless-stopped
+    depends_on:
+      orders-api:
+        condition: service_started
+      inventory-api:
+        condition: service_started
+      auth-center:
+        condition: service_started
+      nacos:
+        condition: service_started
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:80
+      Authentication__Issuer: ${AUTH_CENTER_ISSUER:-http://auth-center}
+      Authentication__Authority: ${AUTH_CENTER_AUTHORITY:-http://auth-center}
+      Authentication__Audience: eztrade-platform
+      Services__Orders: http://orders-api
+      Services__Inventory: http://inventory-api
+      Nacos__Enabled: "true"
+      Nacos__RegisterService: "true"
+      Nacos__ServerAddress: http://nacos:8848
+    ports:
+      - "5097:80"
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: src/Gateways/ApiGateway/Dockerfile
+    image: eztrade/api-gateway:latest
+    container_name: eztrade-api-gateway
+    restart: unless-stopped
+    depends_on:
+      auth-center:
+        condition: service_started
+      orders-api:
+        condition: service_started
+      inventory-api:
+        condition: service_started
+      payments-api:
+        condition: service_started
+      web-bff:
+        condition: service_started
+      nacos:
+        condition: service_started
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:80
+      Authentication__Issuer: ${AUTH_CENTER_ISSUER:-http://auth-center}
+      Authentication__Authority: ${AUTH_CENTER_AUTHORITY:-http://auth-center}
+      Authentication__Audience: eztrade-platform
+      Services__AuthCenter: http://auth-center
+      Services__Orders: http://orders-api
+      Services__Inventory: http://inventory-api
+      Services__Payments: http://payments-api
+      Services__Bff: http://web-bff
+      Nacos__Enabled: "true"
+      Nacos__RegisterService: "true"
+      Nacos__ServerAddress: http://nacos:8848
+    ports:
+      - "5096:80"
 
 volumes:
-  pgdata:
   esdata:
   nacosdata:

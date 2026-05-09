@@ -9,6 +9,7 @@ using Inventory.Infrastructure.DependencyInjection;
 using Inventory.Infrastructure.EntityFrameworkCore.DbContexts;
 
 var builder = WebApplication.CreateBuilder(args);
+// 加载 Nacos 配置并初始化统一可观测能力。
 builder.Configuration.AddNacosJsonConfiguration(builder.Configuration);
 builder.AddPlatformObservability("inventory-api");
 
@@ -33,6 +34,7 @@ app.UsePlatformObservability();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// 库存调整接口：对指定 SKU 执行增减。
 app.MapPost("/inventory/{skuId:guid}/adjust", async (
     Guid skuId,
     AdjustmentRequest request,
@@ -59,6 +61,7 @@ app.MapHealthChecks("/health/ready");
 
 using (var scope = app.Services.CreateScope())
 {
+    // 启动时自动执行数据库迁移，确保表结构已就绪。
     var dbContext = scope.ServiceProvider.GetRequiredService<InventoryDbContext>();
     await dbContext.Database.MigrateAsync();
 }

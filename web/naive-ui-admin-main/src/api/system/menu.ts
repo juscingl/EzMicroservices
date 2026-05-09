@@ -10,11 +10,28 @@ export interface ListDate {
   children?: ListDate[];
 }
 
+export interface BackendMenuNode {
+  id: string;
+  code: string;
+  name: string;
+  route: string;
+  icon?: string;
+  component?: string;
+  sort: number;
+  isVisible: boolean;
+  isEnabled: boolean;
+  children?: BackendMenuNode[];
+}
+
 /**
- * @description: 根据用户id获取用户菜单
+ * @description: 获取当前登录用户菜单
  */
 export function adminMenus() {
-  return Alova.Get('/menus');
+  return Alova.Get<BackendMenuNode[]>('/auth/me/menus', {
+    meta: {
+      isTransformResponse: false,
+    },
+  });
 }
 
 /**

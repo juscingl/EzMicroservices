@@ -1,267 +1,265 @@
 <template>
   <div>
     <div class="n-layout-page-header">
-      <n-card :bordered="false" title="菜单权限管理">
-        页面数据为 Mock 示例数据，非真实数据。
+      <n-card :bordered="false" title="菜单管理">
+        维护系统菜单与路由映射。
       </n-card>
     </div>
-    <n-grid class="mt-4" cols="1 s:1 m:1 l:3 xl:3 2xl:3" responsive="screen" :x-gap="12">
-      <n-gi span="1">
-        <n-card :segmented="{ content: true }" :bordered="false" size="small">
-          <template #header>
-            <n-space>
-              <n-dropdown trigger="hover" @select="selectAddMenu" :options="addMenuOptions">
-                <n-button type="info" ghost icon-placement="right">
-                  添加菜单
-                  <template #icon>
-                    <div class="flex items-center">
-                      <n-icon size="14">
-                        <DownOutlined />
-                      </n-icon>
-                    </div>
-                  </template>
-                </n-button>
-              </n-dropdown>
-              <n-button type="info" ghost icon-placement="left" @click="packHandle">
-                全部{{ expandedKeys.length ? '收起' : '展开' }}
-                <template #icon>
-                  <div class="flex items-center">
-                    <n-icon size="14">
-                      <AlignLeftOutlined />
-                    </n-icon>
-                  </div>
-                </template>
-              </n-button>
-            </n-space>
-          </template>
-          <div class="w-full menu">
-            <n-input type="input" v-model:value="pattern" placeholder="输入菜单名称搜索">
-              <template #suffix>
-                <n-icon size="18" class="cursor-pointer">
-                  <SearchOutlined />
-                </n-icon>
-              </template>
-            </n-input>
-            <div class="py-3 menu-list">
-              <template v-if="loading">
-                <div class="flex items-center justify-center py-4">
-                  <n-spin size="medium" />
-                </div>
-              </template>
-              <template v-else>
-                <n-tree
-                  block-line
-                  cascade
-                  checkable
-                  :virtual-scroll="true"
-                  :pattern="pattern"
-                  :data="treeData"
-                  :expandedKeys="expandedKeys"
-                  style="max-height: 650px; overflow: hidden"
-                  @update:selected-keys="selectedTree"
-                  @update:expanded-keys="onExpandedKeys"
-                />
-              </template>
-            </div>
-          </div>
-        </n-card>
-      </n-gi>
-      <n-gi span="2">
-        <n-card :segmented="{ content: true }" :bordered="false" size="small">
-          <template #header>
-            <n-space>
-              <n-icon size="18">
-                <FormOutlined />
-              </n-icon>
-              <span>编辑菜单{{ treeItemTitle ? `：${treeItemTitle}` : '' }}</span>
-            </n-space>
-          </template>
-          <n-alert type="info" closable> 从菜单列表选择一项后，进行编辑</n-alert>
-          <n-form
-            :model="formParams"
-            :rules="rules"
-            ref="formRef"
-            label-placement="left"
-            :label-width="100"
-            v-if="isEditMenu"
-            class="py-4"
-          >
-            <n-form-item label="类型" path="type">
-              <span>{{ formParams.type === 1 ? '侧边栏菜单' : '' }}</span>
-            </n-form-item>
-            <n-form-item label="标题" path="label">
-              <n-input placeholder="请输入标题" v-model:value="formParams.label" />
-            </n-form-item>
-            <n-form-item label="副标题" path="subtitle">
-              <n-input placeholder="请输入副标题" v-model:value="formParams.subtitle" />
-            </n-form-item>
-            <n-form-item label="路径" path="path">
-              <n-input placeholder="请输入路径" v-model:value="formParams.path" />
-            </n-form-item>
-            <n-form-item label="打开方式" path="openType">
-              <n-radio-group v-model:value="formParams.openType" name="openType">
-                <n-space>
-                  <n-radio :value="1">当前窗口</n-radio>
-                  <n-radio :value="2">新窗口</n-radio>
-                </n-space>
-              </n-radio-group>
-            </n-form-item>
-            <n-form-item label="菜单权限" path="auth">
-              <n-input placeholder="请输入权限，多个权限用，分割" v-model:value="formParams.auth" />
-            </n-form-item>
-            <n-form-item path="auth" style="margin-left: 100px">
-              <n-space>
-                <n-button type="primary" :loading="subLoading" @click="formSubmit"
-                  >保存修改</n-button
-                >
-                <n-button @click="handleReset">重置</n-button>
-                <n-button @click="handleDel">删除</n-button>
-              </n-space>
-            </n-form-item>
-          </n-form>
-        </n-card>
-      </n-gi>
-    </n-grid>
-    <CreateDrawer ref="createDrawerRef" :title="drawerTitle" />
+    <n-card :bordered="false" class="mt-4">
+      <n-space class="mb-4">
+        <n-button type="primary" @click="openCreate">新增菜单</n-button>
+      </n-space>
+      <n-data-table :columns="columns" :data="menusFlat" :loading="loading" :row-key="(row) => row.id" />
+    </n-card>
+
+    <n-modal v-model:show="showModal" preset="dialog" :title="isEdit ? '编辑菜单' : '新增菜单'">
+      <n-form :model="formModel" label-placement="top">
+        <n-form-item label="编码">
+          <n-input v-model:value="formModel.code" :disabled="isEdit" />
+        </n-form-item>
+        <n-form-item label="名称">
+          <n-input v-model:value="formModel.name" />
+        </n-form-item>
+        <n-form-item label="父级菜单">
+          <n-select v-model:value="formModel.parentId" clearable :options="menuOptions" />
+        </n-form-item>
+        <n-form-item label="路由">
+          <n-input v-model:value="formModel.route" />
+        </n-form-item>
+        <n-form-item label="组件路径">
+          <n-input v-model:value="formModel.component" />
+        </n-form-item>
+        <n-form-item label="图标">
+          <n-input v-model:value="formModel.icon" />
+        </n-form-item>
+        <n-form-item label="排序">
+          <n-input-number v-model:value="formModel.sort" :min="0" />
+        </n-form-item>
+        <n-form-item label="外链地址">
+          <n-input v-model:value="formModel.linkUrl" placeholder="外链菜单时填写" />
+        </n-form-item>
+        <n-space>
+          <n-checkbox v-model:checked="formModel.isVisible">显示</n-checkbox>
+          <n-checkbox v-model:checked="formModel.isEnabled">启用</n-checkbox>
+          <n-checkbox v-model:checked="formModel.isExternal">外链</n-checkbox>
+          <n-checkbox v-model:checked="formModel.keepAlive">缓存页面</n-checkbox>
+          <n-checkbox v-model:checked="formModel.hideInBreadcrumb">隐藏面包屑</n-checkbox>
+        </n-space>
+      </n-form>
+      <template #action>
+        <n-space>
+          <n-button @click="showModal = false">取消</n-button>
+          <n-button type="primary" :loading="saving" @click="submit">保存</n-button>
+        </n-space>
+      </template>
+    </n-modal>
   </div>
 </template>
+
 <script lang="ts" setup>
-  import { ref, unref, reactive, onMounted, computed } from 'vue';
-  import { useDialog, useMessage } from 'naive-ui';
-  import { DownOutlined, AlignLeftOutlined, SearchOutlined, FormOutlined } from '@vicons/antd';
-  import { getMenuList } from '@/api/system/menu';
-  import { getTreeItem } from '@/utils';
-  import CreateDrawer from './CreateDrawer.vue';
-  import type { ListDate } from '@/api/system/menu';
+import { computed, h, onMounted, reactive, ref } from 'vue';
+import { NButton, NPopconfirm, useMessage } from 'naive-ui';
+import { createMenu, deleteMenu, getAuthMenus, type AuthMenu, updateMenu } from '@/api/system/auth';
 
-  const rules = {
-    label: {
-      required: true,
-      message: '请输入标题',
-      trigger: 'blur',
-    },
-    path: {
-      required: true,
-      message: '请输入路径',
-      trigger: 'blur',
-    },
+const message = useMessage();
+const loading = ref(false);
+const saving = ref(false);
+const showModal = ref(false);
+const isEdit = ref(false);
+const editingMenuId = ref('');
+const menus = ref<AuthMenu[]>([]);
+
+const formModel = reactive({
+  code: '',
+  name: '',
+  parentId: undefined as string | undefined,
+  route: '',
+  icon: '',
+  component: '',
+  sort: 0,
+  isVisible: true,
+  isEnabled: true,
+  isExternal: false,
+  linkUrl: '',
+  keepAlive: true,
+  hideInBreadcrumb: false,
+});
+
+const menusFlat = computed(() => {
+  const output: AuthMenu[] = [];
+  const walk = (nodes: AuthMenu[]) => {
+    nodes.forEach((node) => {
+      output.push(node);
+      walk(node.children ?? []);
+    });
   };
+  walk(menus.value);
+  return output;
+});
 
-  const formRef: any = ref(null);
-  const createDrawerRef = ref();
-  const message = useMessage();
-  const dialog = useDialog();
+const menuOptions = computed(() =>
+  menusFlat.value.map((item) => ({
+    label: `${item.name} (${item.code})`,
+    value: item.id,
+  }))
+);
 
-  let treeItemKey = ref([]);
-
-  let expandedKeys = ref([]);
-
-  const treeData = ref<ListDate[]>([]);
-
-  const loading = ref(true);
-  const subLoading = ref(false);
-  const isEditMenu = ref(false);
-  const treeItemTitle = ref('');
-  const pattern = ref('');
-  const drawerTitle = ref('');
-
-  const isAddSon = computed(() => {
-    return !treeItemKey.value.length;
-  });
-
-  const addMenuOptions = ref([
-    {
-      label: '添加顶级菜单',
-      key: 'home',
-      disabled: false,
-    },
-    {
-      label: '添加子菜单',
-      key: 'son',
-      disabled: isAddSon,
-    },
-  ]);
-
-  const formParams = reactive({
-    type: 1,
-    label: '',
-    subtitle: '',
-    path: '',
-    auth: '',
-    openType: 1,
-  });
-
-  function selectAddMenu(key: string) {
-    drawerTitle.value = key === 'home' ? '添加顶栏菜单' : `添加子菜单：${treeItemTitle.value}`;
-    openCreateDrawer();
-  }
-
-  function openCreateDrawer() {
-    const { openDrawer } = createDrawerRef.value;
-    openDrawer();
-  }
-
-  function selectedTree(keys) {
-    if (keys.length) {
-      const treeItem = getTreeItem(unref(treeData), keys[0]);
-      treeItemKey.value = keys;
-      treeItemTitle.value = treeItem.label;
-      Object.assign(formParams, treeItem);
-      isEditMenu.value = true;
-    } else {
-      isEditMenu.value = false;
-      treeItemKey.value = [];
-      treeItemTitle.value = '';
-    }
-  }
-
-  function handleDel() {
-    dialog.info({
-      title: '提示',
-      content: `您确定想删除此权限吗?`,
-      positiveText: '确定',
-      negativeText: '取消',
-      onPositiveClick: () => {
-        message.success('删除成功');
-      },
-      onNegativeClick: () => {
-        message.error('已取消');
-      },
-    });
-  }
-
-  function handleReset() {
-    const treeItem = getTreeItem(unref(treeData), treeItemKey.value[0]);
-    Object.assign(formParams, treeItem);
-  }
-
-  function formSubmit() {
-    formRef.value.validate((errors: boolean) => {
-      if (!errors) {
-        message.error('抱歉，您没有该权限');
-      } else {
-        message.error('请填写完整信息');
-      }
-    });
-  }
-
-  function packHandle() {
-    if (expandedKeys.value.length) {
-      expandedKeys.value = [];
-    } else {
-      expandedKeys.value = unref(treeData).map((item: any) => item.key as string) as [];
-    }
-  }
-
-  onMounted(async () => {
-    const treeMenuList = await getMenuList();
-    const keys = treeMenuList.list.map((item) => item.key);
-    Object.assign(formParams, keys);
-    treeData.value = treeMenuList.list;
+async function loadMenus() {
+  loading.value = true;
+  try {
+    menus.value = await getAuthMenus();
+  } finally {
     loading.value = false;
-  });
-
-  function onExpandedKeys(keys) {
-    expandedKeys.value = keys;
   }
+}
+
+function openCreate() {
+  isEdit.value = false;
+  editingMenuId.value = '';
+  formModel.code = '';
+  formModel.name = '';
+  formModel.parentId = undefined;
+  formModel.route = '';
+  formModel.icon = '';
+  formModel.component = '';
+  formModel.sort = 0;
+  formModel.isVisible = true;
+  formModel.isEnabled = true;
+  formModel.isExternal = false;
+  formModel.linkUrl = '';
+  formModel.keepAlive = true;
+  formModel.hideInBreadcrumb = false;
+  showModal.value = true;
+}
+
+function openEdit(menu: AuthMenu) {
+  isEdit.value = true;
+  editingMenuId.value = menu.id;
+  formModel.code = menu.code;
+  formModel.name = menu.name;
+  formModel.parentId = undefined;
+  formModel.route = menu.route;
+  formModel.icon = menu.icon ?? '';
+  formModel.component = menu.component ?? '';
+  formModel.sort = menu.sort;
+  formModel.isVisible = menu.isVisible;
+  formModel.isEnabled = menu.isEnabled;
+  formModel.isExternal = menu.isExternal;
+  formModel.linkUrl = menu.linkUrl ?? '';
+  formModel.keepAlive = menu.keepAlive;
+  formModel.hideInBreadcrumb = menu.hideInBreadcrumb;
+  showModal.value = true;
+}
+
+async function removeMenu(menu: AuthMenu) {
+  await deleteMenu(menu.id);
+  message.success('菜单已删除');
+  await loadMenus();
+}
+
+async function submit() {
+  const code = formModel.code.trim();
+  const name = formModel.name.trim();
+  const route = formModel.route.trim();
+  const linkUrl = formModel.linkUrl.trim();
+
+  if (!code) {
+    message.error('菜单编码不能为空');
+    return;
+  }
+
+  if (!name) {
+    message.error('菜单名称不能为空');
+    return;
+  }
+
+  if (!route) {
+    message.error('菜单路由不能为空');
+    return;
+  }
+
+  if (formModel.isExternal && !linkUrl) {
+    message.error('外链菜单必须填写外链地址');
+    return;
+  }
+
+  if (!formModel.isExternal && linkUrl) {
+    message.error('内部菜单不允许填写外链地址');
+    return;
+  }
+
+  saving.value = true;
+  try {
+    const payload = {
+      code,
+      name,
+      parentId: formModel.parentId,
+      route,
+      icon: formModel.icon.trim() || undefined,
+      component: formModel.component.trim() || undefined,
+      sort: formModel.sort ?? 0,
+      isVisible: formModel.isVisible,
+      isEnabled: formModel.isEnabled,
+      isExternal: formModel.isExternal,
+      linkUrl: linkUrl || undefined,
+      keepAlive: formModel.keepAlive,
+      hideInBreadcrumb: formModel.hideInBreadcrumb,
+      description: undefined,
+    };
+    if (isEdit.value) {
+      await updateMenu(editingMenuId.value, payload);
+      message.success('菜单已更新');
+    } else {
+      await createMenu(payload);
+      message.success('菜单已创建');
+    }
+    showModal.value = false;
+    await loadMenus();
+  } finally {
+    saving.value = false;
+  }
+}
+
+const columns = [
+  { title: '名称', key: 'name' },
+  { title: '编码', key: 'code' },
+  { title: '路由', key: 'route' },
+  { title: '组件', key: 'component' },
+  { title: '排序', key: 'sort' },
+  {
+    title: '外链',
+    key: 'isExternal',
+    render(row: AuthMenu) {
+      return row.isExternal ? '是' : '否';
+    },
+  },
+  {
+    title: '操作',
+    key: 'action',
+    render(row: AuthMenu) {
+      return h('div', { style: 'display:flex;gap:8px;' }, [
+        h(
+          NButton,
+          { size: 'small', type: 'primary', ghost: true, onClick: () => openEdit(row) },
+          { default: () => '编辑' }
+        ),
+        h(
+          NPopconfirm,
+          { onPositiveClick: () => removeMenu(row) },
+          {
+            trigger: () =>
+              h(
+                NButton,
+                { size: 'small', type: 'error', ghost: true },
+                { default: () => '删除' }
+              ),
+            default: () => '确认删除该菜单？',
+          }
+        ),
+      ]);
+    },
+  },
+];
+
+onMounted(loadMenus);
 </script>

@@ -13,6 +13,7 @@ using Payments.Infrastructure.DependencyInjection;
 using Payments.Infrastructure.EntityFrameworkCore.DbContexts;
 
 var builder = WebApplication.CreateBuilder(args);
+// 加载 Nacos 配置并初始化统一可观测能力。
 builder.Configuration.AddNacosJsonConfiguration(builder.Configuration);
 builder.AddPlatformObservability("payments-api");
 
@@ -41,6 +42,7 @@ app.UsePlatformObservability();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// 手工支付接口：用于主动发起支付扣款。
 app.MapPost("/payments", async (CreatePaymentRequest request, IPaymentService paymentService, CancellationToken cancellationToken) =>
 {
     var payment = await paymentService.CaptureAsync(request.OrderId, request.Amount, request.Currency ?? "CNY", cancellationToken);
@@ -60,6 +62,7 @@ app.MapHealthChecks("/health/ready");
 
 using (var scope = app.Services.CreateScope())
 {
+    // 启动时自动执行数据库迁移，确保表结构已就绪。
     var dbContext = scope.ServiceProvider.GetRequiredService<PaymentsDbContext>();
     await dbContext.Database.MigrateAsync();
 }

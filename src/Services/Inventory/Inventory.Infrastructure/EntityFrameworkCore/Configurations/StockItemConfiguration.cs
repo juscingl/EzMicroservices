@@ -4,8 +4,14 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Inventory.Infrastructure.EntityFrameworkCore.Configurations;
 
+/// <summary>
+/// 库存实体映射配置。
+/// </summary>
 public sealed class StockItemConfiguration : IEntityTypeConfiguration<StockItem>
 {
+    /// <summary>
+    /// 配置库存实体映射规则。
+    /// </summary>
     public void Configure(EntityTypeBuilder<StockItem> builder)
     {
         builder.ToTable("stock_items");

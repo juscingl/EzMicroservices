@@ -5358,7 +5358,8 @@
       "outputPath": "D:\\eztrade\\Work\\src\\Services\\Inventory\\Inventory.Api\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "D:\\eztrade\\Work\\NuGet.Config"
+        "D:\\eztrade\\Work\\NuGet.Config",
+        "C:\\Users\\JuscingLi\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"

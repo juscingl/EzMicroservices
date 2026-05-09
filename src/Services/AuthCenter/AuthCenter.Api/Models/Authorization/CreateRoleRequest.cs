@@ -5,4 +5,8 @@ namespace AuthCenter.Api.Models.Authorization;
 /// </summary>
 public sealed record CreateRoleRequest(
     string Name,
+    string Code,
+    string? Description,
+    int Sort,
+    bool IsEnabled,
     IReadOnlyCollection<string> PermissionCodes);

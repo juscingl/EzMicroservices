@@ -13,4 +13,8 @@ public sealed record MenuNodeResponse(
     int Sort,
     bool IsVisible,
     bool IsEnabled,
+    bool IsExternal,
+    string? LinkUrl,
+    bool KeepAlive,
+    bool HideInBreadcrumb,
     IReadOnlyCollection<MenuNodeResponse> Children);
