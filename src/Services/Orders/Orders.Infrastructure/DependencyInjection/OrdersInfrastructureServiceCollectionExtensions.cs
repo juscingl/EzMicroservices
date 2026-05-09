@@ -11,8 +11,17 @@ using Orders.Infrastructure.Search;
 
 namespace Orders.Infrastructure.DependencyInjection;
 
+/// <summary>
+/// 订单基础设施依赖注入扩展。
+/// </summary>
 public static class OrdersInfrastructureServiceCollectionExtensions
 {
+    /// <summary>
+    /// 注册订单模块基础设施依赖。
+    /// </summary>
+    /// <param name="services">服务集合。</param>
+    /// <param name="configuration">应用配置。</param>
+    /// <returns>服务集合。</returns>
     public static IServiceCollection AddOrdersInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddPlatformSearch(configuration);

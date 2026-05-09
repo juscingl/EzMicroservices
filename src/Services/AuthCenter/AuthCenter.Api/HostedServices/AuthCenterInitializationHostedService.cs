@@ -1,5 +1,6 @@
 using AuthCenter.Api.EntityFrameworkCore;
 using AuthCenter.Api.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace AuthCenter.Api.HostedServices;
 
@@ -12,7 +13,7 @@ public sealed class AuthCenterInitializationHostedService(
         await using var scope = serviceProvider.CreateAsyncScope();
 
         var dbContext = scope.ServiceProvider.GetRequiredService<AuthCenterDbContext>();
-        await dbContext.Database.EnsureCreatedAsync(cancellationToken);
+        await dbContext.Database.MigrateAsync(cancellationToken);
 
         var seeder = scope.ServiceProvider.GetRequiredService<IAuthCenterDataSeeder>();
         await seeder.SeedAsync(cancellationToken);

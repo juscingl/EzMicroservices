@@ -4,8 +4,15 @@ using Orders.Domain.Entities;
 
 namespace Orders.Infrastructure.EntityFrameworkCore.Configurations;
 
+/// <summary>
+/// 订单实体映射配置。
+/// </summary>
 public sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
 {
+    /// <summary>
+    /// 配置订单实体及其子集合映射。
+    /// </summary>
+    /// <param name="builder">实体构建器。</param>
     public void Configure(EntityTypeBuilder<Order> builder)
     {
         builder.ToTable("orders");

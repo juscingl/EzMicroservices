@@ -15,6 +15,9 @@ internal sealed class NacosOpenApiClient(
     private string? _accessToken;
     private DateTime _accessTokenExpiresAtUtc = DateTime.MinValue;
 
+    /// <summary>
+    /// 拉取 Nacos 配置文本。未配置 dataId 时直接返回 null。
+    /// </summary>
     public async Task<string?> GetConfigAsync(CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(_options.ConfigDataId))
@@ -28,6 +31,9 @@ internal sealed class NacosOpenApiClient(
         return await response.Content.ReadAsStringAsync(cancellationToken);
     }
 
+    /// <summary>
+    /// 在 Nacos 注册服务实例，供服务发现使用。
+    /// </summary>
     public async Task RegisterInstanceAsync(string ip, int port, CancellationToken cancellationToken = default)
     {
         var payload = new Dictionary<string, string>
@@ -49,6 +55,9 @@ internal sealed class NacosOpenApiClient(
         await SendInstanceRequestAsync(HttpMethod.Post, payload, cancellationToken);
     }
 
+    /// <summary>
+    /// 从 Nacos 注销服务实例，通常在应用关闭时调用。
+    /// </summary>
     public async Task DeregisterInstanceAsync(string ip, int port, CancellationToken cancellationToken = default)
     {
         var payload = new Dictionary<string, string>
@@ -136,6 +145,7 @@ internal sealed class NacosOpenApiClient(
                 ? tokenTtl.GetInt32()
                 : 18000;
 
+            // 提前 60 秒过期，减少边界时刻的 token 失效请求。
             _accessTokenExpiresAtUtc = DateTime.UtcNow.AddSeconds(Math.Max(tokenTtlSeconds - 60, 60));
             return _accessToken;
         }

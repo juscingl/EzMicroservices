@@ -4,13 +4,18 @@ using BuildingBlocks.Nacos.DependencyInjection;
 using BuildingBlocks.Observability.DependencyInjection;
 using BuildingBlocks.Security.Authorization;
 using BuildingBlocks.Security.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
 using Orders.Application.Commands;
 using Orders.Application.Dtos;
 using Orders.Application.Services;
 using Orders.Infrastructure.DependencyInjection;
 using Orders.Infrastructure.EntityFrameworkCore.DbContexts;
 
+const int DefaultSearchSize = 20;
+const int MaxSearchSize = 100;
+
 var builder = WebApplication.CreateBuilder(args);
+// 加载 Nacos 配置并初始化统一可观测能力。
 builder.Configuration.AddNacosJsonConfiguration(builder.Configuration);
 builder.AddPlatformObservability("orders-api");
 
@@ -36,8 +41,14 @@ app.UsePlatformObservability();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// 创建订单：校验输入后调用应用服务完成持久化。
 app.MapPost("/orders", async (PlaceOrderRequest request, IOrderService orderService, CancellationToken cancellationToken) =>
 {
+    if (request.Lines.Count == 0 || request.Lines.Any(line => line.Quantity <= 0 || line.UnitPrice <= 0))
+    {
+        return Results.BadRequest("Order lines are required and each line must contain positive quantity and unitPrice.");
+    }
+
     var command = new PlaceOrderCommand(
         request.CustomerId,
         request.Lines.Select(line => new OrderLineDto(line.ProductId, line.Quantity, line.UnitPrice)).ToArray());
@@ -54,6 +65,7 @@ app.MapGet("/orders/{id:guid}", async (Guid id, IOrderService orderService, Canc
 })
 .RequireAuthorization(PlatformAuthorizationPolicies.OrdersRead);
 
+// 订单搜索：统一控制查询条数上限，避免过大请求。
 app.MapGet("/orders/search", async (
     string? keyword,
     Guid? customerId,
@@ -61,7 +73,13 @@ app.MapGet("/orders/search", async (
     IOrderService orderService,
     CancellationToken cancellationToken) =>
 {
-    var results = await orderService.SearchAsync(keyword, customerId, size ?? 20, cancellationToken);
+    var effectiveSize = size ?? DefaultSearchSize;
+    if (effectiveSize <= 0 || effectiveSize > MaxSearchSize)
+    {
+        return Results.BadRequest($"size must be between 1 and {MaxSearchSize}.");
+    }
+
+    var results = await orderService.SearchAsync(keyword, customerId, effectiveSize, cancellationToken);
     return Results.Ok(results);
 })
 .RequireAuthorization(PlatformAuthorizationPolicies.OrdersRead);
@@ -71,8 +89,9 @@ app.MapHealthChecks("/health/ready");
 
 using (var scope = app.Services.CreateScope())
 {
+    // 启动时自动执行数据库迁移，确保表结构已就绪。
     var dbContext = scope.ServiceProvider.GetRequiredService<OrdersDbContext>();
-    await dbContext.Database.EnsureCreatedAsync();
+    await dbContext.Database.MigrateAsync();
 }
 
 app.Run();

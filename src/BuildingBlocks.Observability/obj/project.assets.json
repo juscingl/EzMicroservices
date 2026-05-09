@@ -1519,8 +1519,7 @@
       "outputPath": "D:\\eztrade\\Work\\src\\BuildingBlocks.Observability\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "D:\\eztrade\\Work\\NuGet.Config",
-        "C:\\Users\\JuscingLi\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "D:\\eztrade\\Work\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"

@@ -4,8 +4,14 @@ using Microsoft.Extensions.Configuration;
 
 namespace BuildingBlocks.Nacos.Configuration;
 
+/// <summary>
+/// Nacos JSON 配置提供程序，负责拉取并展开远程配置键值。
+/// </summary>
 public sealed class NacosJsonConfigurationProvider(NacosOptions options) : ConfigurationProvider
 {
+    /// <summary>
+    /// 同步加载配置数据到当前 Provider。
+    /// </summary>
     public override void Load()
     {
         if (!options.Enabled || !options.LoadConfiguration || string.IsNullOrWhiteSpace(options.ConfigDataId))
@@ -19,6 +25,7 @@ public sealed class NacosJsonConfigurationProvider(NacosOptions options) : Confi
             Timeout = TimeSpan.FromSeconds(options.RequestTimeoutSeconds)
         };
 
+        // ConfigurationProvider.Load 为同步入口，这里以阻塞方式获取远程配置。
         var token = GetAccessTokenAsync(httpClient).GetAwaiter().GetResult();
         var requestUri = BuildConfigUri(token);
         var payload = httpClient.GetStringAsync(requestUri).GetAwaiter().GetResult();

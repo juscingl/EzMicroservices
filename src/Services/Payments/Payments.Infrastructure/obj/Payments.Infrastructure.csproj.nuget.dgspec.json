@@ -14,8 +14,7 @@
         "outputPath": "D:\\eztrade\\Work\\src\\BuildingBlocks.EntityFrameworkCore\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "D:\\eztrade\\Work\\NuGet.Config",
-          "C:\\Users\\JuscingLi\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "D:\\eztrade\\Work\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -84,8 +83,7 @@
         "outputPath": "D:\\eztrade\\Work\\src\\BuildingBlocks\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "D:\\eztrade\\Work\\NuGet.Config",
-          "C:\\Users\\JuscingLi\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "D:\\eztrade\\Work\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -144,8 +142,7 @@
         "outputPath": "D:\\eztrade\\Work\\src\\Services\\Payments\\Payments.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "D:\\eztrade\\Work\\NuGet.Config",
-          "C:\\Users\\JuscingLi\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "D:\\eztrade\\Work\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -208,8 +205,7 @@
         "outputPath": "D:\\eztrade\\Work\\src\\Services\\Payments\\Payments.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "D:\\eztrade\\Work\\NuGet.Config",
-          "C:\\Users\\JuscingLi\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "D:\\eztrade\\Work\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"

@@ -5,8 +5,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BuildingBlocks.Security.DependencyInjection;
 
+/// <summary>
+/// 授权注册扩展，集中定义平台权限策略与权限匹配规则。
+/// </summary>
 public static class PlatformAuthorizationServiceCollectionExtensions
 {
+    /// <summary>
+    /// 注册平台授权策略。
+    /// </summary>
     public static IServiceCollection AddPlatformAuthorization(this IServiceCollection services)
     {
         var authorization = services.AddAuthorizationBuilder();
@@ -144,6 +150,7 @@ public static class PlatformAuthorizationServiceCollectionExtensions
         string policyName,
         IEnumerable<string> permissions)
     {
+        // 策略内去重并过滤空白权限，避免配置噪声影响判定。
         var permissionArray = permissions
             .Where(permission => !string.IsNullOrWhiteSpace(permission))
             .Distinct(StringComparer.OrdinalIgnoreCase)

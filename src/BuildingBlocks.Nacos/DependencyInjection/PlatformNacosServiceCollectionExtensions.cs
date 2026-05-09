@@ -6,8 +6,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BuildingBlocks.Nacos.DependencyInjection;
 
+/// <summary>
+/// Nacos 能力注册扩展，统一接入配置与服务注册相关组件。
+/// </summary>
 public static class PlatformNacosServiceCollectionExtensions
 {
+    /// <summary>
+    /// 注册平台 Nacos 组件。
+    /// </summary>
     public static IServiceCollection AddPlatformNacos(
         this IServiceCollection services,
         IConfiguration configuration,

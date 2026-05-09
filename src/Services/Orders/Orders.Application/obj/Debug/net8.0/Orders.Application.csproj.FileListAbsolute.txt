@@ -19,3 +19,4 @@ D:\eztrade\Work\src\Services\Orders\Orders.Application\bin\Debug\net8.0\Building
 D:\eztrade\Work\src\Services\Orders\Orders.Application\bin\Debug\net8.0\BuildingBlocks.Messaging.dll
 D:\eztrade\Work\src\Services\Orders\Orders.Application\bin\Debug\net8.0\BuildingBlocks.Contracts.pdb
 D:\eztrade\Work\src\Services\Orders\Orders.Application\bin\Debug\net8.0\BuildingBlocks.Messaging.pdb
+D:\eztrade\Work\src\Services\Orders\Orders.Application\obj\Debug\net8.0\Orders.Application.sourcelink.json

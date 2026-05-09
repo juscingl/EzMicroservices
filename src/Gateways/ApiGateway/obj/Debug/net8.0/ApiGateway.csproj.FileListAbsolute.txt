@@ -103,3 +103,4 @@ D:\eztrade\Work\src\Gateways\ApiGateway\bin\Debug\net8.0\BuildingBlocks.Observab
 D:\eztrade\Work\src\Gateways\ApiGateway\bin\Debug\net8.0\BuildingBlocks.Nacos.pdb
 D:\eztrade\Work\src\Gateways\ApiGateway\bin\Debug\net8.0\BuildingBlocks.dll
 D:\eztrade\Work\src\Gateways\ApiGateway\bin\Debug\net8.0\BuildingBlocks.pdb
+D:\eztrade\Work\src\Gateways\ApiGateway\obj\Debug\net8.0\ApiGateway.sourcelink.json

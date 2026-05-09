@@ -13,6 +13,9 @@ internal sealed class RabbitMqConnectionProvider(
     private readonly SemaphoreSlim _connectionLock = new(1, 1);
     private IConnection? _connection;
 
+    /// <summary>
+    /// 获取可用连接。若当前连接不可用则创建新连接。
+    /// </summary>
     public async Task<IConnection> GetConnectionAsync(CancellationToken cancellationToken = default)
     {
         if (_connection is { IsOpen: true })
@@ -55,6 +58,9 @@ internal sealed class RabbitMqConnectionProvider(
         }
     }
 
+    /// <summary>
+    /// 释放连接与同步锁资源。
+    /// </summary>
     public async ValueTask DisposeAsync()
     {
         if (_connection is not null)

@@ -3683,8 +3683,7 @@
       "outputPath": "D:\\eztrade\\Work\\src\\Bff\\WebBff\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "D:\\eztrade\\Work\\NuGet.Config",
-        "C:\\Users\\JuscingLi\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "D:\\eztrade\\Work\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"

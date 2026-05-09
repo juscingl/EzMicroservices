@@ -5,8 +5,14 @@ using OpenIddict.Validation.AspNetCore;
 
 namespace BuildingBlocks.Security.DependencyInjection;
 
+/// <summary>
+/// 认证注册扩展，统一接入 OpenIddict Validation 资源服务校验。
+/// </summary>
 public static class PlatformAuthenticationServiceCollectionExtensions
 {
+    /// <summary>
+    /// 注册平台认证能力。
+    /// </summary>
     public static IServiceCollection AddPlatformAuthentication(
         this IServiceCollection services,
         IConfiguration configuration)
@@ -17,6 +23,7 @@ public static class PlatformAuthenticationServiceCollectionExtensions
         var authenticationOptions =
             authenticationSection.Get<PlatformAuthenticationOptions>() ?? new PlatformAuthenticationOptions();
 
+        // 认证后可在应用层直接读取当前用户信息。
         services.AddPlatformCurrentUserAccessor();
 
         services.AddAuthentication(options =>

@@ -19,6 +19,9 @@ internal sealed class RabbitMqIntegrationEventPublisher(
     private readonly SemaphoreSlim _channelLock = new(1, 1);
     private IChannel? _channel;
 
+    /// <summary>
+    /// 发布集成事件到 RabbitMQ Topic Exchange。
+    /// </summary>
     public async Task PublishAsync<TEvent>(TEvent integrationEvent, string routingKey, CancellationToken cancellationToken = default)
         where TEvent : IntegrationEvent
     {
@@ -72,6 +75,9 @@ internal sealed class RabbitMqIntegrationEventPublisher(
         return _channel;
     }
 
+    /// <summary>
+    /// 释放消息通道与同步锁资源。
+    /// </summary>
     public async ValueTask DisposeAsync()
     {
         if (_channel is not null)

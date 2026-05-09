@@ -8,8 +8,14 @@ using Serilog.Events;
 
 namespace BuildingBlocks.Observability.DependencyInjection;
 
+/// <summary>
+/// 可观测性注册扩展，统一配置 Serilog 与请求日志中间件。
+/// </summary>
 public static class PlatformObservabilityExtensions
 {
+    /// <summary>
+    /// 注册平台日志能力。
+    /// </summary>
     public static WebApplicationBuilder AddPlatformObservability(this WebApplicationBuilder builder, string serviceName)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(serviceName);
@@ -59,6 +65,9 @@ public static class PlatformObservabilityExtensions
         return builder;
     }
 
+    /// <summary>
+    /// 启用平台可观测性中间件。
+    /// </summary>
     public static WebApplication UsePlatformObservability(this WebApplication app)
     {
         app.UseSerilogRequestLogging();

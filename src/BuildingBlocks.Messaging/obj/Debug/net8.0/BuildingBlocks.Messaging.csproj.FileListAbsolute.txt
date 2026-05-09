@@ -13,3 +13,4 @@ D:\eztrade\Work\src\BuildingBlocks.Messaging\obj\Debug\net8.0\BuildingBlocks.Mes
 D:\eztrade\Work\src\BuildingBlocks.Messaging\obj\Debug\net8.0\refint\BuildingBlocks.Messaging.dll
 D:\eztrade\Work\src\BuildingBlocks.Messaging\obj\Debug\net8.0\BuildingBlocks.Messaging.pdb
 D:\eztrade\Work\src\BuildingBlocks.Messaging\obj\Debug\net8.0\ref\BuildingBlocks.Messaging.dll
+D:\eztrade\Work\src\BuildingBlocks.Messaging\obj\Debug\net8.0\BuildingBlocks.Messaging.sourcelink.json

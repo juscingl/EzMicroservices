@@ -8,6 +8,7 @@ using BuildingBlocks.Security.DependencyInjection;
 using BuildingBlocks.Security.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using OpenIddict.Validation.AspNetCore;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
@@ -29,6 +30,11 @@ public static class AuthCenterServiceCollectionExtensions
         var authenticationOptions = configuration
             .GetSection(PlatformAuthenticationOptions.SectionName)
             .Get<PlatformAuthenticationOptions>() ?? new PlatformAuthenticationOptions();
+        var environmentName = configuration["ASPNETCORE_ENVIRONMENT"];
+        var useDevelopmentCertificates = string.Equals(
+            environmentName,
+            Environments.Development,
+            StringComparison.OrdinalIgnoreCase);
 
         services.AddPlatformCurrentUserAccessor();
 
@@ -92,8 +98,16 @@ public static class AuthCenterServiceCollectionExtensions
                     TimeSpan.FromDays(authenticationOptions.RefreshTokenExpirationDays));
 
                 options.DisableAccessTokenEncryption();
-                options.AddDevelopmentEncryptionCertificate();
-                options.AddDevelopmentSigningCertificate();
+                if (useDevelopmentCertificates)
+                {
+                    options.AddDevelopmentEncryptionCertificate();
+                    options.AddDevelopmentSigningCertificate();
+                }
+                else
+                {
+                    options.AddEphemeralEncryptionKey();
+                    options.AddEphemeralSigningKey();
+                }
 
                 var aspNetCore = options.UseAspNetCore()
                     .EnableTokenEndpointPassthrough()

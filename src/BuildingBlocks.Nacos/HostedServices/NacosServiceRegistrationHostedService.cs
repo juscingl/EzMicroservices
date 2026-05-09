@@ -16,6 +16,9 @@ internal sealed class NacosServiceRegistrationHostedService(
     private readonly NacosOptions _options = options.Value;
     private string? _registeredIp;
 
+    /// <summary>
+    /// 后台执行服务注册流程，并在失败时持续重试。
+    /// </summary>
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         if (!_options.Enabled || !_options.RegisterService)
@@ -59,6 +62,9 @@ internal sealed class NacosServiceRegistrationHostedService(
         }
     }
 
+    /// <summary>
+    /// 应用停止时执行服务注销。
+    /// </summary>
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
         if (_options.Enabled && _options.RegisterService && !string.IsNullOrWhiteSpace(_registeredIp))

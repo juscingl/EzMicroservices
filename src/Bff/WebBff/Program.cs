@@ -6,6 +6,8 @@ using BuildingBlocks.Security.Authorization;
 using BuildingBlocks.Security.DependencyInjection;
 using Microsoft.Net.Http.Headers;
 
+const int InventoryHttpTimeoutSeconds = 5;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddNacosJsonConfiguration(builder.Configuration);
 builder.AddPlatformObservability("web-bff");
@@ -24,6 +26,7 @@ builder.Services.AddHttpClient("orders", client =>
 builder.Services.AddHttpClient("inventory", client =>
 {
     client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("Services:Inventory") ?? "http://inventory-api");
+    client.Timeout = TimeSpan.FromSeconds(InventoryHttpTimeoutSeconds);
 });
 
 var app = builder.Build();
@@ -49,30 +52,38 @@ app.MapGet("/bff/orders/{id:guid}", async (
 
     using var orderRequest = CreateAuthorizedRequest(HttpMethod.Get, $"/orders/{id}", httpContext);
     var orderResponse = await ordersClient.SendAsync(orderRequest, ct);
-    if (!orderResponse.IsSuccessStatusCode)
+    if (orderResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
     {
         return Results.Problem(detail: "Order not found", statusCode: StatusCodes.Status404NotFound);
+    }
+
+    if (!orderResponse.IsSuccessStatusCode)
+    {
+        return Results.Problem(detail: "Orders service unavailable", statusCode: StatusCodes.Status502BadGateway);
     }
 
     using var orderStream = await orderResponse.Content.ReadAsStreamAsync(ct);
     var order = await JsonSerializer.DeserializeAsync<JsonElement>(orderStream, cancellationToken: ct);
 
-    var inventory = new List<object>();
+    var inventory = new List<JsonElement>();
     if (order.TryGetProperty("items", out var items) && items.ValueKind == JsonValueKind.Array)
     {
-        foreach (var item in items.EnumerateArray())
-        {
-            if (item.TryGetProperty("productId", out var sku) && sku.ValueKind == JsonValueKind.String && Guid.TryParse(sku.GetString(), out var skuId))
-            {
-                using var inventoryRequest = CreateAuthorizedRequest(HttpMethod.Get, $"/inventory/{skuId}", httpContext);
-                var invResp = await inventoryClient.SendAsync(inventoryRequest, ct);
-                if (invResp.IsSuccessStatusCode)
-                {
-                    var invJson = await invResp.Content.ReadAsStringAsync(ct);
-                    inventory.Add(JsonSerializer.Deserialize<JsonElement>(invJson));
-                }
-            }
-        }
+        var productIds = items.EnumerateArray()
+            .Select(item => item.TryGetProperty("productId", out var productId)
+                && productId.ValueKind == JsonValueKind.String
+                && Guid.TryParse(productId.GetString(), out var parsedProductId)
+                    ? parsedProductId
+                    : (Guid?)null)
+            .Where(productId => productId.HasValue)
+            .Select(productId => productId!.Value)
+            .Distinct()
+            .ToArray();
+
+        var inventoryTasks = productIds
+            .Select(productId => FetchInventoryItemAsync(inventoryClient, productId, httpContext, ct))
+            .ToArray();
+        var inventoryResults = await Task.WhenAll(inventoryTasks);
+        inventory.AddRange(inventoryResults.Where(result => result.HasValue).Select(result => result!.Value));
     }
 
     return Results.Ok(new { order, inventory });
@@ -90,4 +101,22 @@ static HttpRequestMessage CreateAuthorizedRequest(HttpMethod method, string uri,
     }
 
     return request;
+}
+
+static async Task<JsonElement?> FetchInventoryItemAsync(
+    HttpClient inventoryClient,
+    Guid productId,
+    HttpContext httpContext,
+    CancellationToken cancellationToken)
+{
+    using var inventoryRequest = CreateAuthorizedRequest(HttpMethod.Get, $"/inventory/{productId}", httpContext);
+    using var inventoryResponse = await inventoryClient.SendAsync(inventoryRequest, cancellationToken);
+    if (!inventoryResponse.IsSuccessStatusCode)
+    {
+        return null;
+    }
+
+    using var inventoryStream = await inventoryResponse.Content.ReadAsStreamAsync(cancellationToken);
+    var inventoryItem = await JsonSerializer.DeserializeAsync<JsonElement>(inventoryStream, cancellationToken: cancellationToken);
+    return inventoryItem;
 }

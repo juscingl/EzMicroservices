@@ -13,3 +13,4 @@ D:\eztrade\Work\src\BuildingBlocks.EntityFrameworkCore\obj\Debug\net8.0\Building
 D:\eztrade\Work\src\BuildingBlocks.EntityFrameworkCore\obj\Debug\net8.0\refint\BuildingBlocks.EntityFrameworkCore.dll
 D:\eztrade\Work\src\BuildingBlocks.EntityFrameworkCore\obj\Debug\net8.0\BuildingBlocks.EntityFrameworkCore.pdb
 D:\eztrade\Work\src\BuildingBlocks.EntityFrameworkCore\obj\Debug\net8.0\ref\BuildingBlocks.EntityFrameworkCore.dll
+D:\eztrade\Work\src\BuildingBlocks.EntityFrameworkCore\obj\Debug\net8.0\BuildingBlocks.EntityFrameworkCore.sourcelink.json

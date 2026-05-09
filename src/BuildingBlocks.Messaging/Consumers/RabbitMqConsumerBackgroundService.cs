@@ -24,6 +24,9 @@ internal sealed class RabbitMqConsumerBackgroundService(
     private readonly RabbitMqOptions _options = options.Value;
     private readonly List<IChannel> _channels = [];
 
+    /// <summary>
+    /// 后台初始化并启动所有已注册队列的消费者。
+    /// </summary>
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         if (!_options.Enabled || consumerRegistry.Registrations.Count == 0)
@@ -61,6 +64,9 @@ internal sealed class RabbitMqConsumerBackgroundService(
         }
     }
 
+    /// <summary>
+    /// 停止后台服务时释放全部通道资源。
+    /// </summary>
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
         await DisposeChannelsAsync();
@@ -72,6 +78,7 @@ internal sealed class RabbitMqConsumerBackgroundService(
         IntegrationConsumerRegistration registration,
         CancellationToken cancellationToken)
     {
+        // 每个业务队列配套一个死信交换机和死信队列，避免失败消息直接丢失。
         var deadLetterExchange = $"{registration.QueueName}.dlx";
         var deadLetterQueue = $"{registration.QueueName}.deadletter";
         var queueArguments = new Dictionary<string, object?>
@@ -159,6 +166,7 @@ internal sealed class RabbitMqConsumerBackgroundService(
                     "Failed to process RabbitMQ message for queue {QueueName} and routing key {RoutingKey}.",
                     registration.QueueName,
                     registration.RoutingKey);
+                // 失败消息进入死信队列，避免无上限重试阻塞主队列。
                 await channel.BasicNackAsync(args.DeliveryTag, multiple: false, requeue: false, cancellationToken: cancellationToken);
             }
         };

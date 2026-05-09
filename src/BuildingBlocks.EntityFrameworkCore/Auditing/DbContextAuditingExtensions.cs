@@ -3,8 +3,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BuildingBlocks.EntityFrameworkCore.Auditing;
 
+/// <summary>
+/// DbContext 审计扩展，负责在提交前统一填充创建/修改/删除审计字段。
+/// </summary>
 public static class DbContextAuditingExtensions
 {
+    /// <summary>
+    /// 对当前变更集应用平台审计规则。
+    /// </summary>
     public static void ApplyPlatformAuditing(this DbContext dbContext, ICurrentUserAccessor? currentUserAccessor = null)
     {
         dbContext.ChangeTracker.DetectChanges();
@@ -31,6 +37,7 @@ public static class DbContextAuditingExtensions
                 case EntityState.Deleted:
                     if (entry.Entity is ISoftDelete softDelete)
                     {
+                        // 软删除对象统一转换为更新操作，避免物理删除。
                         entry.State = EntityState.Modified;
                         softDelete.IsDeleted = true;
                         ApplyDeletionAudit(entry.Entity, now, currentUser.UserId);

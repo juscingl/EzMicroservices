@@ -19,3 +19,4 @@ D:\eztrade\Work\src\Services\Payments\Payments.Application\bin\Debug\net8.0\Buil
 D:\eztrade\Work\src\Services\Payments\Payments.Application\bin\Debug\net8.0\BuildingBlocks.Messaging.dll
 D:\eztrade\Work\src\Services\Payments\Payments.Application\bin\Debug\net8.0\BuildingBlocks.Contracts.pdb
 D:\eztrade\Work\src\Services\Payments\Payments.Application\bin\Debug\net8.0\BuildingBlocks.Messaging.pdb
+D:\eztrade\Work\src\Services\Payments\Payments.Application\obj\Debug\net8.0\Payments.Application.sourcelink.json

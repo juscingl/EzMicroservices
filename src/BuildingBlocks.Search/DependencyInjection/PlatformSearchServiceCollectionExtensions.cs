@@ -9,8 +9,14 @@ using Microsoft.Extensions.Options;
 
 namespace BuildingBlocks.Search.DependencyInjection;
 
+/// <summary>
+/// 搜索能力注册扩展，统一接入 Elasticsearch 客户端与相关组件。
+/// </summary>
 public static class PlatformSearchServiceCollectionExtensions
 {
+    /// <summary>
+    /// 注册平台搜索组件。
+    /// </summary>
     public static IServiceCollection AddPlatformSearch(this IServiceCollection services, IConfiguration configuration)
     {
         services
@@ -26,6 +32,7 @@ public static class PlatformSearchServiceCollectionExtensions
 
             if (!string.IsNullOrWhiteSpace(options.UserName))
             {
+                // 兼容通过 HttpClient 直接调用 ES REST API 的场景。
                 var credentials = Convert.ToBase64String(
                     System.Text.Encoding.UTF8.GetBytes($"{options.UserName}:{options.Password}"));
                 httpClient.DefaultRequestHeaders.Authorization =

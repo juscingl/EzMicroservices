@@ -9,3 +9,4 @@ D:\eztrade\Work\src\BuildingBlocks.Contracts\obj\Debug\net8.0\BuildingBlocks.Con
 D:\eztrade\Work\src\BuildingBlocks.Contracts\obj\Debug\net8.0\refint\BuildingBlocks.Contracts.dll
 D:\eztrade\Work\src\BuildingBlocks.Contracts\obj\Debug\net8.0\BuildingBlocks.Contracts.pdb
 D:\eztrade\Work\src\BuildingBlocks.Contracts\obj\Debug\net8.0\ref\BuildingBlocks.Contracts.dll
+D:\eztrade\Work\src\BuildingBlocks.Contracts\obj\Debug\net8.0\BuildingBlocks.Contracts.sourcelink.json

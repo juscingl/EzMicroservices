@@ -10,3 +10,4 @@ D:\eztrade\Work\src\BuildingBlocks.Search\obj\Debug\net8.0\BuildingBlocks.Search
 D:\eztrade\Work\src\BuildingBlocks.Search\obj\Debug\net8.0\refint\BuildingBlocks.Search.dll
 D:\eztrade\Work\src\BuildingBlocks.Search\obj\Debug\net8.0\BuildingBlocks.Search.pdb
 D:\eztrade\Work\src\BuildingBlocks.Search\obj\Debug\net8.0\ref\BuildingBlocks.Search.dll
+D:\eztrade\Work\src\BuildingBlocks.Search\obj\Debug\net8.0\BuildingBlocks.Search.sourcelink.json

@@ -106,3 +106,4 @@ D:\eztrade\Work\src\Bff\WebBff\bin\Debug\net8.0\BuildingBlocks.Observability.pdb
 D:\eztrade\Work\src\Bff\WebBff\bin\Debug\net8.0\BuildingBlocks.Nacos.pdb
 D:\eztrade\Work\src\Bff\WebBff\bin\Debug\net8.0\BuildingBlocks.dll
 D:\eztrade\Work\src\Bff\WebBff\bin\Debug\net8.0\BuildingBlocks.pdb
+D:\eztrade\Work\src\Bff\WebBff\obj\Debug\net8.0\WebBff.sourcelink.json

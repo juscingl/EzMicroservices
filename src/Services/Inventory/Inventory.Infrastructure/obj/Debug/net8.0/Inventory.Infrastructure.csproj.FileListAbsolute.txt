@@ -19,3 +19,4 @@ D:\eztrade\Work\src\Services\Inventory\Inventory.Infrastructure\obj\Debug\net8.0
 D:\eztrade\Work\src\Services\Inventory\Inventory.Infrastructure\obj\Debug\net8.0\ref\Inventory.Infrastructure.dll
 D:\eztrade\Work\src\Services\Inventory\Inventory.Infrastructure\bin\Debug\net8.0\Inventory.Infrastructure.runtimeconfig.json
 D:\eztrade\Work\src\Services\Inventory\Inventory.Infrastructure\obj\Debug\net8.0\Inventory.Infrastructure.genruntimeconfig.cache
+D:\eztrade\Work\src\Services\Inventory\Inventory.Infrastructure\obj\Debug\net8.0\Inventory.Infrastructure.sourcelink.json

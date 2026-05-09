@@ -10,3 +10,4 @@ D:\eztrade\Work\src\BuildingBlocks.Nacos\obj\Debug\net8.0\BuildingBlocks.Nacos.d
 D:\eztrade\Work\src\BuildingBlocks.Nacos\obj\Debug\net8.0\refint\BuildingBlocks.Nacos.dll
 D:\eztrade\Work\src\BuildingBlocks.Nacos\obj\Debug\net8.0\BuildingBlocks.Nacos.pdb
 D:\eztrade\Work\src\BuildingBlocks.Nacos\obj\Debug\net8.0\ref\BuildingBlocks.Nacos.dll
+D:\eztrade\Work\src\BuildingBlocks.Nacos\obj\Debug\net8.0\BuildingBlocks.Nacos.sourcelink.json

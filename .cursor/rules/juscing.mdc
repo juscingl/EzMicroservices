@@ -1,0 +1,182 @@
+---
+alwaysApply: true
+---
+
+---
+description: 
+alwaysApply: true
+---
+
+version: 1
+
+rules:
+
+  # =========================
+  # 🧠 一、模型行为约束（核心：防幻觉）
+  # =========================
+
+  - name: 禁止编造
+    description: >
+      严禁编造任何不存在的类、方法、属性、接口、API、库或配置。
+      如果不确定，请明确说明“我不确定”，禁止猜测。
+
+  - name: 必须基于上下文
+    description: >
+      只能使用当前代码上下文中已存在的类型、方法、变量。
+      未提供的内容不得自行假设。
+
+  - name: 禁止伪代码
+    description: >
+      生成的代码必须是可编译、可运行的真实代码，
+      禁止输出伪代码或示例性质的不完整代码。
+
+  - name: 明确依赖
+    description: >
+      如使用第三方库，必须明确说明 NuGet 包名称，
+      不得默认项目中已安装。
+
+  - name: 不允许隐式假设
+    description: >
+      不得假设数据库字段、DTO结构、接口返回值。
+      若信息不足，应先询问，而不是直接生成代码。
+
+  - name: 优先复用已有代码
+    description: >
+      优先复用已有方法、服务、仓储，不允许重复造轮子。
+
+  - name: 禁止过度自信
+    description: >
+      对不确定的实现必须标注风险或说明假设前提。
+
+  # =========================
+  # 🧱 二、C# / .NET 代码规范
+  # =========================
+
+  - name: 命名规范
+    description: >
+      严格遵循 C# 命名规范：
+      - 类、方法、属性：PascalCase
+      - 局部变量、参数：camelCase
+      - 私有字段：_camelCase
+      - 接口：I 开头（如 IUserService）
+
+  - name: 方法职责单一
+    description: >
+      每个方法只做一件事，禁止一个方法包含复杂业务逻辑堆叠。
+
+  - name: 强类型优先
+    description: >
+      优先使用强类型，禁止滥用 var（除非类型明显）。
+
+  - name: 禁止魔法字符串
+    description: >
+      所有字符串常量必须提取为 const 或配置项。
+
+  - name: 空值安全
+    description: >
+      必须处理 null，避免 NullReferenceException。
+
+  - name: 异步规范
+    description: >
+      异步方法必须使用 async/await，方法名以 Async 结尾。
+
+  - name: LINQ规范
+    description: >
+      LINQ 表达式应简洁清晰，避免链式过长影响可读性。
+
+  - name: DTO规范
+    description: >
+      DTO 只用于数据传输，不包含业务逻辑。
+
+  - name: 实体规范
+    description: >
+      实体类只包含字段，不包含业务逻辑。
+
+  # =========================
+  # 🏗 三、架构与设计约束
+  # =========================
+
+  - name: 分层架构
+    description: >
+      必须遵循分层架构：
+      Controller -> Application/Service -> Domain -> Infrastructure
+
+  - name: 禁止跨层调用
+    description: >
+      不允许 Controller 直接访问数据库或仓储层。
+
+  - name: 依赖注入
+    description: >
+      所有服务必须通过依赖注入获取，不允许手动 new。
+
+  - name: 接口优先
+    description: >
+      服务必须定义接口，禁止直接依赖实现类。
+
+  - name: 事务一致性
+    description: >
+      涉及多表操作必须明确事务边界。
+
+  # =========================
+  # 🗄 四、数据库与ORM规范（适配 SqlSugar / EF）
+  # =========================
+
+  - name: 查询优化
+    description: >
+      查询必须避免 N+1 问题，尽量使用 join 或一次性查询。
+
+  - name: 分页必须存在
+    description: >
+      所有列表接口必须支持分页，禁止全量查询。
+
+  - name: 字段明确
+    description: >
+      Select 时必须明确字段，禁止 Select *。
+
+  - name: 条件判断安全
+    description: >
+      Where 条件必须考虑空值情况。
+
+  - name: 禁止隐式转换
+    description: >
+      禁止字符串与数字直接比较，必须类型一致。
+
+  # =========================
+  # 🧪 五、可维护性与可读性
+  # =========================
+
+  - name: 注释规范
+    description: >
+      公共方法必须有 XML 注释（summary/param/returns）。
+
+  - name: 日志规范
+    description: >
+      关键业务必须记录日志，包含输入参数和关键结果。
+
+  - name: 错误处理
+    description: >
+      必须使用统一异常处理机制，不允许直接抛裸异常。
+
+  - name: 可读性优先
+    description: >
+      代码优先保证可读性，而不是极致简洁。
+
+  # =========================
+  # 🚫 六、禁止行为（重点）
+  # =========================
+
+  - name: 禁止生成不存在的字段
+    description: >
+      不允许生成数据库或DTO中未定义的字段。
+
+  - name: 禁止猜测业务逻辑
+    description: >
+      不得自行脑补业务规则，必须基于已知信息实现。
+
+  - name: 禁止跳过验证
+    description: >
+      所有输入必须做参数校验。
+
+  - name: 禁止硬编码
+    description: >
+      禁止将配置写死在代码中。

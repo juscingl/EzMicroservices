@@ -6,8 +6,14 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace BuildingBlocks.EntityFrameworkCore.Auditing;
 
+/// <summary>
+/// EF 模型构建扩展，统一应用领域事件忽略与软删除查询过滤等约定。
+/// </summary>
 public static class ModelBuilderExtensions
 {
+    /// <summary>
+    /// 应用平台统一模型约定。
+    /// </summary>
     public static ModelBuilder ApplyPlatformConventions(this ModelBuilder modelBuilder)
     {
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
@@ -31,6 +37,7 @@ public static class ModelBuilderExtensions
             return;
         }
 
+        // 领域事件仅用于内存处理，不参与数据库映射。
         modelBuilder.Entity(entityType.ClrType).Ignore(nameof(Entity.DomainEvents));
     }
 
@@ -49,6 +56,7 @@ public static class ModelBuilderExtensions
             parameter,
             Expression.Constant(nameof(ISoftDelete.IsDeleted)));
         var compareExpression = Expression.Equal(isDeletedProperty, Expression.Constant(false));
+        // 对软删除实体自动追加 IsDeleted = false 的全局过滤条件。
         entityType.SetQueryFilter(Expression.Lambda(compareExpression, parameter));
     }
 }

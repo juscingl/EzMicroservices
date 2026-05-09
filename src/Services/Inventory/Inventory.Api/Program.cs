@@ -3,8 +3,8 @@ using BuildingBlocks.Nacos.DependencyInjection;
 using BuildingBlocks.Observability.DependencyInjection;
 using BuildingBlocks.Security.Authorization;
 using BuildingBlocks.Security.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
 using Inventory.Application.Services;
-using Inventory.Domain.Repositories;
 using Inventory.Infrastructure.DependencyInjection;
 using Inventory.Infrastructure.EntityFrameworkCore.DbContexts;
 
@@ -46,10 +46,10 @@ app.MapPost("/inventory/{skuId:guid}/adjust", async (
 
 app.MapGet("/inventory/{skuId:guid}", async (
     Guid skuId,
-    IInventoryRepository inventoryRepository,
+    IInventoryService inventoryService,
     CancellationToken cancellationToken) =>
 {
-    var stockItem = await inventoryRepository.FindBySkuIdAsync(skuId, cancellationToken);
+    var stockItem = await inventoryService.GetBySkuIdAsync(skuId, cancellationToken);
     return stockItem is null ? Results.NotFound() : Results.Ok(stockItem);
 })
 .RequireAuthorization(PlatformAuthorizationPolicies.InventoryRead);
@@ -60,7 +60,7 @@ app.MapHealthChecks("/health/ready");
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<InventoryDbContext>();
-    await dbContext.Database.EnsureCreatedAsync();
+    await dbContext.Database.MigrateAsync();
 }
 
 app.Run();

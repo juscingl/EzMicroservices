@@ -23,4 +23,9 @@ public sealed class InventoryService(IInventoryRepository inventoryRepository, I
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return stockItem.Quantity;
     }
+
+    public Task<StockItem?> GetBySkuIdAsync(Guid skuId, CancellationToken cancellationToken = default)
+    {
+        return inventoryRepository.FindBySkuIdAsync(skuId, cancellationToken);
+    }
 }

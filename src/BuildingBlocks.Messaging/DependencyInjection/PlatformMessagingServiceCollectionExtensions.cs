@@ -10,8 +10,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BuildingBlocks.Messaging.DependencyInjection;
 
+/// <summary>
+/// 消息能力注册扩展，统一注入 RabbitMQ 发布/消费基础设施。
+/// </summary>
 public static class PlatformMessagingServiceCollectionExtensions
 {
+    /// <summary>
+    /// 注册平台消息组件，并按需启动后台消费者。
+    /// </summary>
     public static IServiceCollection AddPlatformMessaging(
         this IServiceCollection services,
         IConfiguration configuration,
@@ -30,6 +36,7 @@ public static class PlatformMessagingServiceCollectionExtensions
         services.AddSingleton<IIntegrationEventSerializer, SystemTextJsonIntegrationEventSerializer>();
         services.AddSingleton<IIntegrationEventPublisher, RabbitMqIntegrationEventPublisher>();
 
+        // 只有声明了消费者时才启动后台消费服务。
         if (registry.Registrations.Count > 0)
         {
             services.AddHostedService<RabbitMqConsumerBackgroundService>();

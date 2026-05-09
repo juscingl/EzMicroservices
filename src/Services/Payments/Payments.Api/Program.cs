@@ -6,6 +6,7 @@ using BuildingBlocks.Nacos.DependencyInjection;
 using BuildingBlocks.Observability.DependencyInjection;
 using BuildingBlocks.Security.Authorization;
 using BuildingBlocks.Security.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
 using Payments.Application.IntegrationHandlers;
 using Payments.Application.Services;
 using Payments.Infrastructure.DependencyInjection;
@@ -60,7 +61,7 @@ app.MapHealthChecks("/health/ready");
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<PaymentsDbContext>();
-    await dbContext.Database.EnsureCreatedAsync();
+    await dbContext.Database.MigrateAsync();
 }
 
 app.Run();

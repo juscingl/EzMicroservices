@@ -10,6 +10,9 @@ using Orders.Domain.Repositories;
 
 namespace Orders.Application.Services;
 
+/// <summary>
+/// 订单应用服务实现，负责下单、查询与搜索。
+/// </summary>
 public sealed class OrderService(
     IOrderRepository orderRepository,
     IUnitOfWork unitOfWork,
@@ -18,6 +21,12 @@ public sealed class OrderService(
     IOrderSearchReader orderSearchReader,
     ILogger<OrderService> logger) : IOrderService
 {
+    /// <summary>
+    /// 创建订单并发布集成事件与搜索索引。
+    /// </summary>
+    /// <param name="command">下单命令。</param>
+    /// <param name="cancellationToken">取消令牌。</param>
+    /// <returns>订单标识。</returns>
     public async Task<Guid> PlaceAsync(PlaceOrderCommand command, CancellationToken cancellationToken = default)
     {
         var items = command.Lines.Select(line => new OrderItem(line.ProductId, line.Quantity, line.UnitPrice));
@@ -43,11 +52,25 @@ public sealed class OrderService(
         return order.Id;
     }
 
+    /// <summary>
+    /// 根据标识获取订单详情。
+    /// </summary>
+    /// <param name="id">订单标识。</param>
+    /// <param name="cancellationToken">取消令牌。</param>
+    /// <returns>订单实体；不存在时返回空。</returns>
     public Task<Order?> GetAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return orderRepository.FindWithDetailsAsync(id, cancellationToken);
     }
 
+    /// <summary>
+    /// 查询订单搜索结果。
+    /// </summary>
+    /// <param name="keyword">搜索关键字。</param>
+    /// <param name="customerId">客户标识。</param>
+    /// <param name="size">返回数量上限。</param>
+    /// <param name="cancellationToken">取消令牌。</param>
+    /// <returns>订单搜索结果集合。</returns>
     public Task<IReadOnlyCollection<OrderSearchResult>> SearchAsync(
         string? keyword,
         Guid? customerId,
