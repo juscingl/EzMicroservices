@@ -1,3 +1,4 @@
+using BuildingBlocks.DependencyInjection;
 using System.Text.Json;
 using BuildingBlocks.Nacos.Configuration;
 using BuildingBlocks.Nacos.DependencyInjection;

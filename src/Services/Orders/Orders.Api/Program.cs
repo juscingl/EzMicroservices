@@ -1,3 +1,4 @@
+using BuildingBlocks.DependencyInjection;
 using BuildingBlocks.Messaging.DependencyInjection;
 using BuildingBlocks.Nacos.Configuration;
 using BuildingBlocks.Nacos.DependencyInjection;
@@ -20,7 +21,7 @@ builder.Configuration.AddNacosJsonConfiguration(builder.Configuration);
 builder.AddPlatformObservability("orders-api");
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddProblemDetails();
+builder.Services.AddPlatformExceptionHandling();
 builder.Services.AddSwaggerGen();
 builder.Services.AddOrdersInfrastructure(builder.Configuration);
 builder.Services.AddPlatformMessaging(builder.Configuration);

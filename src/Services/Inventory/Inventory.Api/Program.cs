@@ -1,3 +1,4 @@
+using BuildingBlocks.DependencyInjection;
 using BuildingBlocks.Nacos.Configuration;
 using BuildingBlocks.Nacos.DependencyInjection;
 using BuildingBlocks.Observability.DependencyInjection;
@@ -14,7 +15,7 @@ builder.Configuration.AddNacosJsonConfiguration(builder.Configuration);
 builder.AddPlatformObservability("inventory-api");
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddProblemDetails();
+builder.Services.AddPlatformExceptionHandling();
 builder.Services.AddSwaggerGen();
 builder.Services.AddInventoryInfrastructure(builder.Configuration);
 builder.Services.AddPlatformNacos(builder.Configuration, "inventory-api");
