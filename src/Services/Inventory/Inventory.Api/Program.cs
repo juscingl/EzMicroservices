@@ -14,6 +14,7 @@ builder.Configuration.AddNacosJsonConfiguration(builder.Configuration);
 builder.AddPlatformObservability("inventory-api");
 
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddProblemDetails();
 builder.Services.AddSwaggerGen();
 builder.Services.AddInventoryInfrastructure(builder.Configuration);
 builder.Services.AddPlatformNacos(builder.Configuration, "inventory-api");
@@ -31,6 +32,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UsePlatformObservability();
+app.UseExceptionHandler();
 app.UseAuthentication();
 app.UseAuthorization();
 

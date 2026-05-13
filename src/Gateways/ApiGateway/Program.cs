@@ -114,6 +114,7 @@ builder.Services.AddReverseProxy().LoadFromMemory(
 var app = builder.Build();
 
 app.UsePlatformObservability();
+app.UseExceptionHandler();
 app.UseAuthentication();
 app.UseAuthorization();
 // 网关所有流量最终通过反向代理转发到下游。
