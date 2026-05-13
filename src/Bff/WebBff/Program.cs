@@ -15,7 +15,7 @@ builder.Configuration.AddNacosJsonConfiguration(builder.Configuration);
 builder.AddPlatformObservability("web-bff");
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddProblemDetails();
+builder.Services.AddPlatformExceptionHandling();
 builder.Services.AddSwaggerGen();
 builder.Services.AddPlatformNacos(builder.Configuration, "web-bff");
 builder.Services.AddPlatformAuthentication(builder.Configuration);

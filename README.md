@@ -79,7 +79,7 @@ dotnet test
 ## 工程约定
 
 - 服务启动时自动执行数据库迁移。
-- 统一启用 ProblemDetails 和异常处理管道。
+- 统一启用 ProblemDetails 和异常处理管道（包含 `errorCode` 与 `traceId` 扩展字段，便于排障）。
 - 统一暴露健康检查端点：`/health`、`/health/ready`。
 
 ## 后续优化建议
