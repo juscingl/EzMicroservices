@@ -1,3 +1,4 @@
+using BuildingBlocks.DependencyInjection;
 using BuildingBlocks.Contracts.IntegrationEvents;
 using BuildingBlocks.Contracts.Messaging;
 using BuildingBlocks.Messaging.DependencyInjection;
@@ -18,6 +19,7 @@ builder.Configuration.AddNacosJsonConfiguration(builder.Configuration);
 builder.AddPlatformObservability("payments-api");
 
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddPlatformExceptionHandling();
 builder.Services.AddSwaggerGen();
 builder.Services.AddPaymentsInfrastructure(builder.Configuration);
 builder.Services.AddPlatformMessaging(builder.Configuration, configure =>
@@ -39,6 +41,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UsePlatformObservability();
+app.UseExceptionHandler();
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -1,3 +1,4 @@
+using BuildingBlocks.DependencyInjection;
 using System.Text.Json;
 using BuildingBlocks.Nacos.Configuration;
 using BuildingBlocks.Nacos.DependencyInjection;
@@ -14,6 +15,7 @@ builder.Configuration.AddNacosJsonConfiguration(builder.Configuration);
 builder.AddPlatformObservability("web-bff");
 
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddPlatformExceptionHandling();
 builder.Services.AddSwaggerGen();
 builder.Services.AddPlatformNacos(builder.Configuration, "web-bff");
 builder.Services.AddPlatformAuthentication(builder.Configuration);
@@ -39,6 +41,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UsePlatformObservability();
+app.UseExceptionHandler();
 app.UseAuthentication();
 app.UseAuthorization();
 
