@@ -20,8 +20,6 @@ public static class AuthCenterServiceCollectionExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddProblemDetails();
-
         services.Configure<PlatformAuthenticationOptions>(
             configuration.GetSection(PlatformAuthenticationOptions.SectionName));
         services.Configure<AuthCenterSeedOptions>(

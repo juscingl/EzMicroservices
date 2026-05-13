@@ -1,3 +1,4 @@
+using BuildingBlocks.DependencyInjection;
 using BuildingBlocks.Nacos.Configuration;
 using BuildingBlocks.Nacos.DependencyInjection;
 using BuildingBlocks.Observability.DependencyInjection;
@@ -13,6 +14,7 @@ builder.AddPlatformObservability("api-gateway");
 builder.Services.AddPlatformNacos(builder.Configuration, "api-gateway");
 builder.Services.AddPlatformAuthentication(builder.Configuration);
 builder.Services.AddPlatformAuthorization();
+builder.Services.AddPlatformExceptionHandling();
 // 使用内存路由配置 YARP，统一接入各后端服务。
 builder.Services.AddReverseProxy().LoadFromMemory(
     routes:
@@ -114,6 +116,7 @@ builder.Services.AddReverseProxy().LoadFromMemory(
 var app = builder.Build();
 
 app.UsePlatformObservability();
+app.UseExceptionHandler();
 app.UseAuthentication();
 app.UseAuthorization();
 // 网关所有流量最终通过反向代理转发到下游。
