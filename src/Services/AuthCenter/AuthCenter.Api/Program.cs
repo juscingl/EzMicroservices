@@ -16,5 +16,6 @@ builder.Services.AddAuthCenter(builder.Configuration);
 var app = builder.Build();
 // 启用日志、认证授权及认证中心端点。
 app.UsePlatformObservability();
+app.UseExceptionHandler();
 app.UseAuthCenter();
 app.Run();
